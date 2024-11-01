@@ -11,6 +11,7 @@ import CloudKit
 class HomeViewModel: ObservableObject {
     // images array
     @Published var supportImages: [SupportImage] = []
+    @Published var characterImages: [Character] = []
     
     // Alert
     @Published var alertMessage: String = ""
@@ -23,38 +24,62 @@ class HomeViewModel: ObservableObject {
 
         publicDatabase.perform(query, inZoneWith: nil) { [weak self] records, error in
             if let error = error {
+                self?.showAlert(message: "Error fetching Support Images: \(error.localizedDescription)")
                 print("Error fetching SupportImage records: \(error.localizedDescription)")
                 return
             }
 
             guard let records = records else {
-                print("No records found.")
                 return
             }
 
-            // Debugging: Print the count of records retrieved
-            print("Fetched \(records.count) SupportImage records.")
-
             DispatchQueue.main.async {
                 self?.supportImages = records.compactMap { record in
-                    // Debugging: Print the record fields to check their values
-                    print("Record fields: \(record.allKeys())")
-                    
-                    // Ensure you're using the correct field types
                     guard let asset = record["image"] as? CKAsset,
                           let url = asset.fileURL,
                           let tags = record["supportTags"] as? [String],
                           let colour = record["supportColour"] as? String else {
                         print("Failed to extract fields from record: \(record)")
-                        return nil // This allows the closure to return nil if any field is missing
+                        return nil
                     }
-
-                    // Return a new SupportImage only if all fields are successfully extracted
                     return SupportImage(imageURL: url, tags: tags, colour: colour)
                 }
+            }
+        }
+    }
+    
+    func fetchAllCharacters(from containerName: String) {
+        let customContainer = CKContainer(identifier: containerName)
+        let publicDatabase = customContainer.publicCloudDatabase
+        let query = CKQuery(recordType: "Character", predicate: NSPredicate(value: true))
 
-                // Debugging: Print the count after assignment
-                print("SupportImages array count after fetching: \(self?.supportImages.count ?? 0)")
+        publicDatabase.perform(query, inZoneWith: nil) { [weak self] records, error in
+            if let error = error {
+                self?.showAlert(message: "Error fetching Characters: \(error.localizedDescription)")
+                print("Error fetching Characters: \(error.localizedDescription)")
+                return
+            }
+
+            guard let records = records else {
+                return
+            }
+
+            DispatchQueue.main.async {
+                
+                self?.characterImages = records.compactMap { record in
+                    guard let asset = record["artwork"] as? CKAsset,
+                          let url = asset.fileURL,
+                          let tags = record["tags"] as? [String],
+                          let characterClass = record["class"] as? String,
+                          let name = record["name"] as? String,
+                          let title = record["title"] as? String,
+                          let colour = record["colour"] as? String else {
+                        self?.showAlert(message: "Failed to extract fields from record: \(record)")
+                        print("Failed to extract fields from record: \(record)")
+                        return nil
+                    }
+                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title)
+                }
             }
         }
     }
