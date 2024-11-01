@@ -25,10 +25,6 @@ struct CharacterView: View {
                 .font(.title)
                 .fontWeight(.bold)
             
-//            Text("Name: \(character.name)")
-//                .font(.headline)
-//                .foregroundColor(.blue)
-            
             Text("Tags: \(character.tags.joined(separator: ", "))")
                 .font(.subheadline)
                 .foregroundColor(.gray)
