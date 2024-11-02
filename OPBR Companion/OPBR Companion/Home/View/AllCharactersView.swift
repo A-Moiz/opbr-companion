@@ -15,6 +15,20 @@ struct AllCharactersView: View {
     // View model
     @ObservedObject var homeVM: HomeViewModel
     
+    // Filtered character images based on search text
+    private var filteredCharacters: [Character] {
+        if searchText.isEmpty {
+            return homeVM.characterImages
+        } else {
+            return homeVM.characterImages.filter { character in
+                character.characterClass.localizedCaseInsensitiveContains(searchText) ||
+                character.colour.localizedCaseInsensitiveContains(searchText) ||
+                character.name.localizedCaseInsensitiveContains(searchText) ||
+                character.title.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
     var body: some View {
         VStack {
             HStack {
@@ -34,17 +48,17 @@ struct AllCharactersView: View {
             
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
-                    if homeVM.characterImages.isEmpty {
-                        Text("No images available.")
+                    if filteredCharacters.isEmpty {
+                        Text("No characters match your search.")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .center)
                             .gridCellColumns(3)
                     } else {
-                        ForEach(homeVM.characterImages, id: \.imageURL) { image in
-                            NavigationLink(destination: CharacterView(homeVM: homeVM, character: image)) {
-                                CharacterCardView(character: image)
+                        ForEach(filteredCharacters, id: \.imageURL) { character in
+                            NavigationLink(destination: CharacterView(homeVM: homeVM, character: character)) {
+                                CharacterCardView(character: character)
                             }
                         }
                     }
