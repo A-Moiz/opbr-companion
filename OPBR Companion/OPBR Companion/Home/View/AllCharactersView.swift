@@ -18,9 +18,9 @@ struct AllCharactersView: View {
     // Filtered character images based on search text
     private var filteredCharacters: [Character] {
         if searchText.isEmpty {
-            return homeVM.characterImages
+            return homeVM.characters
         } else {
-            return homeVM.characterImages.filter { character in
+            return homeVM.characters.filter { character in
                 character.characterClass.localizedCaseInsensitiveContains(searchText) ||
                 character.colour.localizedCaseInsensitiveContains(searchText) ||
                 character.name.localizedCaseInsensitiveContains(searchText) ||

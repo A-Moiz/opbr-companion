@@ -14,4 +14,6 @@ struct Character: Codable, Equatable {
     let tags: [String]
     let name: String
     let title: String
+    let guide: String?
+    let videoUrl: String?
 }

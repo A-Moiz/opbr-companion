@@ -10,6 +10,8 @@ import SwiftUI
 struct CharacterView: View {
     @ObservedObject var homeVM: HomeViewModel
     var character: Character
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
     
     var body: some View {
         VStack(spacing: 20) {
@@ -17,7 +19,7 @@ struct CharacterView: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 250, height: 250)
+                    .frame(width: 300, height: 300)
                     .cornerRadius(10)
                     .shadow(radius: 5)
             }
@@ -37,6 +39,28 @@ struct CharacterView: View {
             Text("Class: \(character.characterClass)")
                 .font(.subheadline)
                 .foregroundColor(.blue)
+            
+            Button {
+                alertMessage = character.guide ?? "No guide available"
+                showAlert = true
+            } label: {
+                Text("Character Guide")
+            }
+            
+//            if let guide = character.guide {
+//                Text("Character guide: \(guide)")
+//                    .font(.caption)
+//                    .foregroundColor(.blue)
+//            }
+            
+            if character.videoUrl != nil {
+                if let videoUrl = URL(string: character.videoUrl ?? "") {
+                    Link("Click here for video guide", destination: videoUrl)
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                        .underline()
+                }
+            }
             
             VStack {
                 if !homeVM.isCharacterWanted(character) {
@@ -82,6 +106,9 @@ struct CharacterView: View {
         }
         .padding()
         .navigationTitle(character.name)
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Character Guide Summary"), message: Text(alertMessage))
+        }
     }
 }
 
