@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Character {
+struct Character: Codable, Equatable {
     let imageURL: URL
     let characterClass: String
     let colour: String

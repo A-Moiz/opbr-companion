@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
+    // Splash screen
     @State private var showSplashScreen: Bool = true
+    // View model
+    private let contentVM = ContentViewModel()
     
     var body: some View {
         ZStack {
@@ -16,7 +19,7 @@ struct ContentView: View {
                 SplashScreenView()
                     .transition(CustomSplashTransition(isRoot: true))
             } else {
-                HomeView()
+                HomeView(contentVM: contentVM)
                     .transition(CustomSplashTransition(isRoot: false))
             }
         }

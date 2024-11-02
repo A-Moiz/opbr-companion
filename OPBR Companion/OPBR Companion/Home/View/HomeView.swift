@@ -15,14 +15,18 @@ struct HomeView: View {
     @Environment(\.colorScheme) private var colourScheme
     // View model
     @ObservedObject var homeVM = HomeViewModel()
+    @ObservedObject var contentVM: ContentViewModel
     // Container
     let containerIdentifier = "iCloud.OPBR-Companion"
     // Tab
     @State private var selectedTab: Tab?
     @State private var tabProgress: CGFloat = 0
+    // View
+    @State private var showOwnedCharacters: Bool = false
+    @State private var showDesiredCharacters: Bool = false
     
     var body: some View {
-        NavigationStack {            
+        NavigationStack {
             VStack {
                 TabBar()
                     .padding(.top)
@@ -31,7 +35,7 @@ struct HomeView: View {
                     let size = $0.size
                     ScrollView(.horizontal) {
                         LazyHStack(spacing: 0) {
-                            CharactersView()
+                            AllCharactersView(homeVM: homeVM)
                                 .id(Tab.characters)
                                 .containerRelativeFrame(.horizontal)
                             
@@ -63,6 +67,16 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Menu {
+                        // Owned characters
+                        Button(action: { showOwnedCharacters = true }) {
+                            Label("Owned characters", systemImage: "person")
+                        }
+                        
+                        // Desired characters
+                        Button(action: { showDesiredCharacters = true }) {
+                            Label("Desired characters", systemImage: "person")
+                        }
+                        
                         // Refresh Feed
                         Button(action: { Task {
                             homeVM.fetchAllCharacters(from: containerIdentifier)
@@ -76,6 +90,12 @@ struct HomeView: View {
                             .frame(width: 20, height: 20)
                     }
                 }
+            }
+            .sheet(isPresented: $showOwnedCharacters) {
+                OwnedCharactersView(homeVM: homeVM)
+            }
+            .sheet(isPresented: $showDesiredCharacters) {
+                DesiredCharactersView(homeVM: homeVM)
             }
         }
     }
@@ -141,94 +161,94 @@ struct HomeView: View {
     }
     
     // Displaying characters
-    @ViewBuilder
-    func CharactersView() -> some View {
-        VStack {
-            // Search Bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                TextField("Search characters...", text: $searchText)
-                    .textFieldStyle(PlainTextFieldStyle())
-                Image(systemName: "x.circle")
-                    .onTapGesture {
-                        searchText = ""
-                    }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .padding()
-
-            ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
-                    if homeVM.characterImages.isEmpty {
-                        Text("No images available.")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .gridCellColumns(3)
-                    } else {
-                        ForEach(homeVM.characterImages, id: \.imageURL) { image in
-                            NavigationLink(destination: CharacterView(character: image)) {
-                                VStack(spacing: 8) {
-                                    if let uiImage = UIImage(contentsOfFile: image.imageURL.path) {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 110, height: 110)
-                                            .cornerRadius(6)
-                                            .shadow(radius: 1)
-                                    } else {
-                                        Rectangle()
-                                            .fill(Color.gray.opacity(0.3))
-                                            .frame(width: 110, height: 110)
-                                            .cornerRadius(6)
-                                    }
-                                    
-                                    Text("\(image.title)")
-                                        .font(.caption2)
-                                        .foregroundColor(.gray)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                    
-                                    Text("\(image.name)")
-                                        .font(.caption2)
-                                        .bold()
-                                        .foregroundColor(.blue)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                    
-                                    Text("Tags: \(image.tags.joined(separator: ", "))")
-                                        .font(.caption2)
-                                        .foregroundColor(.gray)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                    
-                                    Text("Color: \(image.colour)")
-                                        .font(.caption2)
-                                        .foregroundColor(.blue)
-                                    
-                                    Text("Class: \(image.characterClass)")
-                                        .font(.caption2)
-                                        .foregroundColor(.blue)
-                                }
-                                .frame(width: 115, height: 250)
-                                .padding(2)
-                                .background(Color.white)
-                                .cornerRadius(6)
-                                .shadow(radius: 1)
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal, 4)
-                .padding(.bottom, 8)
-            }
-            .scrollIndicators(.hidden)
-        }
-    }
+//    @ViewBuilder
+//    func CharactersView() -> some View {
+//        VStack {
+//            // Search Bar
+//            HStack {
+//                Image(systemName: "magnifyingglass")
+//                TextField("Search characters...", text: $searchText)
+//                    .textFieldStyle(PlainTextFieldStyle())
+//                Image(systemName: "x.circle")
+//                    .onTapGesture {
+//                        searchText = ""
+//                    }
+//            }
+//            .padding(.horizontal)
+//            .padding(.vertical, 8)
+//            .background(Color(.systemGray6))
+//            .cornerRadius(10)
+//            .padding()
+//            
+//            ScrollView {
+//                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+//                    if homeVM.characterImages.isEmpty {
+//                        Text("No images available.")
+//                            .font(.title2)
+//                            .fontWeight(.semibold)
+//                            .padding()
+//                            .frame(maxWidth: .infinity, alignment: .center)
+//                            .gridCellColumns(3)
+//                    } else {
+//                        ForEach(homeVM.characterImages, id: \.imageURL) { image in
+//                            NavigationLink(destination: CharacterView(character: image)) {
+//                                VStack(spacing: 8) {
+//                                    if let uiImage = UIImage(contentsOfFile: image.imageURL.path) {
+//                                        Image(uiImage: uiImage)
+//                                            .resizable()
+//                                            .scaledToFit()
+//                                            .frame(width: 110, height: 110)
+//                                            .cornerRadius(6)
+//                                            .shadow(radius: 1)
+//                                    } else {
+//                                        Rectangle()
+//                                            .fill(Color.gray.opacity(0.3))
+//                                            .frame(width: 110, height: 110)
+//                                            .cornerRadius(6)
+//                                    }
+//                                    
+//                                    Text("\(image.title)")
+//                                        .font(.caption2)
+//                                        .foregroundColor(.gray)
+//                                        .lineLimit(1)
+//                                        .truncationMode(.tail)
+//                                    
+//                                    Text("\(image.name)")
+//                                        .font(.caption2)
+//                                        .bold()
+//                                        .foregroundColor(.blue)
+//                                        .lineLimit(1)
+//                                        .truncationMode(.tail)
+//                                    
+//                                    Text("Tags: \(image.tags.joined(separator: ", "))")
+//                                        .font(.caption2)
+//                                        .foregroundColor(.gray)
+//                                        .lineLimit(1)
+//                                        .truncationMode(.tail)
+//                                    
+//                                    Text("Color: \(image.colour)")
+//                                        .font(.caption2)
+//                                        .foregroundColor(.blue)
+//                                    
+//                                    Text("Class: \(image.characterClass)")
+//                                        .font(.caption2)
+//                                        .foregroundColor(.blue)
+//                                }
+//                                .frame(width: 115, height: 250)
+//                                .padding(2)
+//                                .background(Color.white)
+//                                .cornerRadius(6)
+//                                .shadow(radius: 1)
+//                            }
+//                        }
+//                    }
+//                }
+//                .padding(.horizontal, 4)
+//                .padding(.bottom, 8)
+//            }
+//            .scrollIndicators(.hidden)
+//        }
+//    }
     
     // Tab
     @ViewBuilder
@@ -269,5 +289,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(contentVM: ContentViewModel())
 }

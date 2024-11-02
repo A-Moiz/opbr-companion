@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		96C603012CD5AE7200A36FB4 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 96C603002CD5AE7200A36FB4 /* KeychainAccess */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		962DB3012CD4156F008077F5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96C603012CD5AE7200A36FB4 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = "OPBR Companion";
 			packageProductDependencies = (
+				96C603002CD5AE7200A36FB4 /* KeychainAccess */,
 			);
 			productName = "OPBR Companion";
 			productReference = 962DB2F02CD4156E008077F5 /* OPBR Companion.app */;
@@ -196,6 +202,7 @@
 			mainGroup = 962DB2E72CD4156E008077F5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				96C602FF2CD5AE7200A36FB4 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 962DB2F12CD4156E008077F5 /* Products */;
@@ -562,6 +569,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		96C602FF2CD5AE7200A36FB4 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		96C603002CD5AE7200A36FB4 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96C602FF2CD5AE7200A36FB4 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 962DB2E82CD4156E008077F5 /* Project object */;
 }
