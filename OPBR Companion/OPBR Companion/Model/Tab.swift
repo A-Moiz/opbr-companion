@@ -10,6 +10,7 @@ import Foundation
 enum Tab: String, CaseIterable {
     case characters = "Characters"
     case support = "Support"
+    case medalSets = "Medal Sets"
     
     var systemImage: String {
         switch self {
@@ -17,6 +18,8 @@ enum Tab: String, CaseIterable {
             return "person"
         case .support:
             return "plus"
+        case .medalSets:
+            return "medal"
         }
     }
 }

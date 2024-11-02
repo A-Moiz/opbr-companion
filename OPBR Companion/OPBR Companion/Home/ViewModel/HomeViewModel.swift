@@ -12,6 +12,7 @@ import UIKit
 class HomeViewModel: ObservableObject {
     // Images array
     @Published var supportImages: [SupportImage] = []
+    @Published var medalSets: [MedalSet] = []
     @Published var characters: [Character] = []
     
     // Character arrays
@@ -135,6 +136,37 @@ class HomeViewModel: ObservableObject {
                         return nil
                     }
                     return SupportImage(imageURL: url, tags: tags, colour: colour)
+                }
+            }
+        }
+    }
+    
+    func fetchMedalSets(from containerName: String) {
+        let customContainer = CKContainer(identifier: containerName)
+        let publicDatabase = customContainer.publicCloudDatabase
+        let query = CKQuery(recordType: "MedalSet", predicate: NSPredicate(value: true))
+        
+        publicDatabase.perform(query, inZoneWith: nil) { [weak self] records, error in
+            if let error = error {
+                self?.showAlert(message: "Error fetching Medal sets: \(error.localizedDescription)")
+                print("Error fetching Medal sets: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let records = records else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self?.medalSets = records.compactMap { record in
+                    guard let asset = record["image"] as? CKAsset,
+                          let url = asset.fileURL,
+                          let bestFor = record["bestFor"] as? [String],
+                          let description = record["description"] as? String else {
+                        print("Failed to extract fields from record: \(record)")
+                        return nil
+                    }
+                    return MedalSet(imageURL: url, description: description, bestFor: bestFor)
                 }
             }
         }

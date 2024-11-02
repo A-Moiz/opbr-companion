@@ -10,6 +10,7 @@ import SwiftUI
 struct AllCharactersView: View {
     // Search text
     @State private var searchText: String = ""
+    @State private var text: String = "Search characters..."
     // Colour scheme
     @Environment(\.colorScheme) private var colourScheme
     // View model
@@ -31,20 +32,7 @@ struct AllCharactersView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Image(systemName: "magnifyingglass")
-                TextField("Search characters...", text: $searchText)
-                    .textFieldStyle(PlainTextFieldStyle())
-                Image(systemName: "x.circle")
-                    .onTapGesture {
-                        searchText = ""
-                    }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .padding()
+            SearchBar(searchText: $searchText, text: $text) 
             
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {

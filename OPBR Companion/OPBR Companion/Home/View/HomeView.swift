@@ -42,6 +42,10 @@ struct HomeView: View {
                             SupportImagesView()
                                 .id(Tab.support)
                                 .containerRelativeFrame(.horizontal)
+                            
+                            MedalSetsView(homeVM: homeVM)
+                                .id(Tab.medalSets)
+                                .containerRelativeFrame(.horizontal)
                         }
                         .scrollTargetLayout()
                         .offsetX { value in
@@ -63,6 +67,7 @@ struct HomeView: View {
             .onAppear {
                 homeVM.fetchSupportImages(from: containerIdentifier)
                 homeVM.fetchAllCharacters(from: containerIdentifier)
+                homeVM.fetchMedalSets(from: containerIdentifier)
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -81,6 +86,7 @@ struct HomeView: View {
                         Button(action: { Task {
                             homeVM.fetchAllCharacters(from: containerIdentifier)
                             homeVM.fetchSupportImages(from: containerIdentifier)
+                            homeVM.fetchMedalSets(from: containerIdentifier)
                         } }) {
                             Label("Refresh", systemImage: "arrow.clockwise")
                         }
@@ -160,93 +166,63 @@ struct HomeView: View {
         }
     }
     
-    // Displaying characters
+    // Displaying medal sets
 //    @ViewBuilder
-//    func CharactersView() -> some View {
-//        VStack {
+//    func MedalSetsView() -> some View {
+//        ScrollView {
 //            // Search Bar
 //            HStack {
 //                Image(systemName: "magnifyingglass")
 //                TextField("Search characters...", text: $searchText)
 //                    .textFieldStyle(PlainTextFieldStyle())
 //                Image(systemName: "x.circle")
-//                    .onTapGesture {
-//                        searchText = ""
-//                    }
 //            }
-//            .padding(.horizontal)
-//            .padding(.vertical, 8)
-//            .background(Color(.systemGray6))
-//            .cornerRadius(10)
-//            .padding()
-//            
-//            ScrollView {
-//                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
-//                    if homeVM.characterImages.isEmpty {
-//                        Text("No images available.")
-//                            .font(.title2)
-//                            .fontWeight(.semibold)
-//                            .padding()
-//                            .frame(maxWidth: .infinity, alignment: .center)
-//                            .gridCellColumns(3)
-//                    } else {
-//                        ForEach(homeVM.characterImages, id: \.imageURL) { image in
-//                            NavigationLink(destination: CharacterView(character: image)) {
-//                                VStack(spacing: 8) {
-//                                    if let uiImage = UIImage(contentsOfFile: image.imageURL.path) {
-//                                        Image(uiImage: uiImage)
-//                                            .resizable()
-//                                            .scaledToFit()
-//                                            .frame(width: 110, height: 110)
-//                                            .cornerRadius(6)
-//                                            .shadow(radius: 1)
-//                                    } else {
-//                                        Rectangle()
-//                                            .fill(Color.gray.opacity(0.3))
-//                                            .frame(width: 110, height: 110)
-//                                            .cornerRadius(6)
-//                                    }
-//                                    
-//                                    Text("\(image.title)")
-//                                        .font(.caption2)
-//                                        .foregroundColor(.gray)
-//                                        .lineLimit(1)
-//                                        .truncationMode(.tail)
-//                                    
-//                                    Text("\(image.name)")
-//                                        .font(.caption2)
-//                                        .bold()
-//                                        .foregroundColor(.blue)
-//                                        .lineLimit(1)
-//                                        .truncationMode(.tail)
-//                                    
-//                                    Text("Tags: \(image.tags.joined(separator: ", "))")
-//                                        .font(.caption2)
-//                                        .foregroundColor(.gray)
-//                                        .lineLimit(1)
-//                                        .truncationMode(.tail)
-//                                    
-//                                    Text("Color: \(image.colour)")
-//                                        .font(.caption2)
-//                                        .foregroundColor(.blue)
-//                                    
-//                                    Text("Class: \(image.characterClass)")
-//                                        .font(.caption2)
-//                                        .foregroundColor(.blue)
-//                                }
-//                                .frame(width: 115, height: 250)
-//                                .padding(2)
-//                                .background(Color.white)
-//                                .cornerRadius(6)
-//                                .shadow(radius: 1)
+//            LazyVStack(spacing: 32) {
+//                if homeVM.medalSets.isEmpty {
+//                    Spacer()
+//                    Text("No medal sets in the database.")
+//                        .font(.title2)
+//                        .fontWeight(.semibold)
+//                        .padding()
+//                } else {
+//                    ForEach(homeVM.medalSets, id: \.imageURL) { image in
+//                        VStack(spacing: 10) {
+//                            if let uiImage = UIImage(contentsOfFile: image.imageURL.path) {
+//                                Image(uiImage: uiImage)
+//                                    .resizable()
+//                                    .scaledToFit()
+//                                    .frame(height: 200)
+//                                    .cornerRadius(10)
+//                                    .shadow(radius: 5)
+//                            } else {
+//                                Rectangle()
+//                                    .fill(Color.gray.opacity(0.3))
+//                                    .frame(height: 200)
+//                                    .cornerRadius(10)
 //                            }
+//                            
+//                            Text("Best For: \(image.tags.joined(separator: ", "))")
+//                                .font(.subheadline)
+//                                .foregroundColor(.gray)
+//                            
+//                            Text("Description: \(image.description)")
+//                                .font(.subheadline)
+//                                .foregroundColor(.blue)
 //                        }
+//                        .padding()
+//                        .background(Color.white)
+//                        .cornerRadius(12)
+//                        .shadow(radius: 5)
 //                    }
 //                }
-//                .padding(.horizontal, 4)
-//                .padding(.bottom, 8)
 //            }
-//            .scrollIndicators(.hidden)
+//            .padding()
+//        }
+//        .scrollIndicators(.hidden)
+//        .scrollClipDisabled()
+//        .mask {
+//            Rectangle()
+//                .padding(.bottom, -100)
 //        }
 //    }
     
