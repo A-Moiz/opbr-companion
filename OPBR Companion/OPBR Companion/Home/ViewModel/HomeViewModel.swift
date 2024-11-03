@@ -220,50 +220,6 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-//    func fetchAllCharacters(from containerName: String) {
-//        let customContainer = CKContainer(identifier: containerName)
-//        let publicDatabase = customContainer.publicCloudDatabase
-//        let query = CKQuery(recordType: "Character", predicate: NSPredicate(value: true))
-//        
-//        publicDatabase.perform(query, inZoneWith: nil) { [weak self] records, error in
-//            if let error = error {
-//                self?.showAlert(message: "Error fetching Characters: \(error.localizedDescription)")
-//                print("Error fetching Characters: \(error.localizedDescription)")
-//                return
-//            }
-//            
-//            guard let records = records else {
-//                return
-//            }
-//            
-//            DispatchQueue.main.async {
-//                
-//                self?.characters = records.compactMap { record in
-//                    guard let asset = record["artwork"] as? CKAsset,
-//                          let url = asset.fileURL,
-//                          let tags = record["tags"] as? [String],
-//                          let characterClass = record["class"] as? String,
-//                          let name = record["name"] as? String,
-//                          let title = record["title"] as? String,
-//                          let guide = record["guide"] as? String,
-//                          let videoUrl = record["videoUrl"] as? String,
-//                          let colour = record["colour"] as? String else {
-//                        self?.showAlert(message: "Failed to extract fields from record: \(record)")
-//                        print("Failed to extract fields from record: \(record)")
-//                        return nil
-//                    }
-//                    
-//                    if let imageData = try? Data(contentsOf: url) {
-//                        self?.saveImageData(imageData, for: url)
-//                    }
-//                    
-//                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl)
-//                }
-//            }
-//            print("Fetched \(self?.characters.count ?? 0) characters")
-//        }
-//    }
-    
     func showAlert(message: String) {
         DispatchQueue.main.async {
             self.alertMessage = message
