@@ -115,7 +115,15 @@ struct SupportView: View {
     var body: some View {
         VStack {
             // Search Bar
-            SearchBar(searchText: $searchText, text: $text)
+            VStack {
+                Text("You can search for supports by colour or tag. For example 'Red' or 'Warlord'")
+                    .foregroundStyle(.gray)
+                    .padding()
+                Text("NOTE: Support percentages vary between users. Consider these supports as examples to guide your choices, showing possible character options and configurations.")
+                    .foregroundStyle(.gray)
+                    .padding()
+                SearchBar(searchText: $searchText, text: $text)
+            }
             
             ScrollView {
                 LazyVStack(spacing: 20) {

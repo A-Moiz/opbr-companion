@@ -111,7 +111,12 @@ struct MedalSetsView: View {
     
     var body: some View {
         VStack {
-            SearchBar(searchText: $searchText, text: $text)
+            VStack {
+                Text("You can search for medal sets optimized for specific character classes, such as Attacker, Defender, and Runner.")
+                    .foregroundStyle(.gray)
+                    .padding()
+                SearchBar(searchText: $searchText, text: $text)
+            }
             
             ScrollView {
                 LazyVStack(spacing: 20) {

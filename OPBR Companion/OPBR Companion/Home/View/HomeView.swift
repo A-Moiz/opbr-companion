@@ -147,15 +147,18 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var searchText: String = ""
+    // Device theme
     @Environment(\.colorScheme) private var colourScheme
+    // View model
     @ObservedObject var homeVM = HomeViewModel()
+    // Tab
     @State private var selectedTab: Tab = .characters
-    @State private var showOwnedCharacters = false
-    @State private var showDesiredCharacters = false
+    // CloudKit container
     let containerIdentifier = "iCloud.OPBR-Companion"
+    // Progress view
     @State private var isLoading: Bool = false
     
+    // Dynamic title
     private var navigationTitle: String {
         switch selectedTab {
         case .characters:
@@ -181,29 +184,13 @@ struct HomeView: View {
             .background(colourScheme == .dark ? Color.black.opacity(0.9) : Color.gray.opacity(0.1))
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Menu {
-                        // Owned characters
-                        Button(action: { showOwnedCharacters = true }) {
-                            Label("Owned characters", systemImage: "person")
-                        }
-
-                        // Desired characters
-                        Button(action: { showDesiredCharacters = true }) {
-                            Label("Desired characters", systemImage: "person")
-                        }
-
-                        // Refresh Feed
-                        Button(action: { Task {
-                            homeVM.fetchAllCharacters(from: containerIdentifier)
-                            homeVM.fetchSupportImages(from: containerIdentifier)
-                            homeVM.fetchMedalSets(from: containerIdentifier)
-                        } }) {
-                            Label("Refresh", systemImage: "arrow.clockwise")
-                        }
-                    } label: {
-                        Image(systemName: "plus")
-                            .resizable()
-                            .frame(width: 20, height: 20)
+                    // Refresh Feed
+                    Button(action: { Task {
+                        homeVM.fetchAllCharacters(from: containerIdentifier)
+                        homeVM.fetchSupportImages(from: containerIdentifier)
+                        homeVM.fetchMedalSets(from: containerIdentifier)
+                    } }) {
+                        Label("Refresh", systemImage: "arrow.clockwise")
                     }
                 }
             }
@@ -218,12 +205,6 @@ struct HomeView: View {
                 homeVM.fetchAllCharacters(from: containerIdentifier)
                 homeVM.fetchMedalSets(from: containerIdentifier)
                 isLoading = false
-            }
-            .sheet(isPresented: $showOwnedCharacters) {
-                OwnedCharactersView(homeVM: homeVM)
-            }
-            .sheet(isPresented: $showDesiredCharacters) {
-                DesiredCharactersView(homeVM: homeVM)
             }
         }
     }

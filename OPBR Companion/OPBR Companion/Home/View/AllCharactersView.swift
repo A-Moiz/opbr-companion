@@ -16,7 +16,6 @@ struct AllCharactersView: View {
     // View model
     @ObservedObject var homeVM: HomeViewModel
     
-    // Filtered character images based on search text
     private var filteredCharacters: [Character] {
         if searchText.isEmpty {
             return homeVM.characters
@@ -32,7 +31,12 @@ struct AllCharactersView: View {
     
     var body: some View {
         VStack {
-            SearchBar(searchText: $searchText, text: $text) 
+            VStack {
+                Text("You can search for characters based on their class, colour, name, or title, such as 'Runner', 'Red', 'Luffy' or 'Egghead'.")
+                    .foregroundStyle(.gray)
+                    .padding()
+                SearchBar(searchText: $searchText, text: $text)
+            }
             
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 8) {
@@ -46,7 +50,7 @@ struct AllCharactersView: View {
                     } else {
                         ForEach(filteredCharacters, id: \.imageURL) { character in
                             NavigationLink(destination: CharacterView(homeVM: homeVM, character: character)) {
-                                CharacterCardView(character: character)
+                                CharacterCardView(character: character, homeViewModel: homeVM)
                             }
                         }
                     }
