@@ -11,7 +11,7 @@ struct ContentView: View {
     // Splash screen
     @State private var showSplashScreen: Bool = true
     // View model
-    private let contentVM = ContentViewModel()
+    // private let contentVM = ContentViewModel()
     
     var body: some View {
         ZStack {
@@ -19,7 +19,7 @@ struct ContentView: View {
                 SplashScreenView()
                     .transition(CustomSplashTransition(isRoot: true))
             } else {
-                HomeView(contentVM: contentVM)
+                HomeView()
                     .transition(CustomSplashTransition(isRoot: false))
             }
         }

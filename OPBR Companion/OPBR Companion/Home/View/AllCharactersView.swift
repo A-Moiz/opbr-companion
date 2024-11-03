@@ -35,7 +35,7 @@ struct AllCharactersView: View {
             SearchBar(searchText: $searchText, text: $text) 
             
             ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 8) {
                     if filteredCharacters.isEmpty {
                         Text("No characters match your search.")
                             .font(.title2)

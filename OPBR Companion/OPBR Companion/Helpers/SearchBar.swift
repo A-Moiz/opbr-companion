@@ -11,6 +11,8 @@ struct SearchBar: View {
     // Search text
     @Binding var searchText: String
     @Binding var text: String
+    // Colour scheme
+    @Environment(\.colorScheme) private var colourScheme
     
     var body: some View {
         HStack {
@@ -24,12 +26,12 @@ struct SearchBar: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
-        .background(Color(.systemGray6))
+        .background(colourScheme == .light ? Color(.systemGray5) : Color(.systemGray5))
         .cornerRadius(10)
         .padding()
     }
 }
 
-//#Preview {
-//    SearchBar()
-//}
+#Preview {
+    SearchBar(searchText: .constant(""), text: .constant("Search..."))
+}

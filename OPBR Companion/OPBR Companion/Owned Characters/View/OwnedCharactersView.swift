@@ -29,7 +29,7 @@ struct OwnedCharactersView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     ScrollView {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 8) {
                             ForEach(homeVM.ownedCharacters, id: \.imageURL) { character in
                                 CharacterCardView(character: character)
                             }
@@ -37,11 +37,11 @@ struct OwnedCharactersView: View {
                         .padding(.horizontal, 4)
                         .padding(.bottom, 8)
                     }
+                    .scrollIndicators(.hidden)
                 }
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    // Refresh Button
                     Button(action: { Task {
                         homeVM.loadOwnedCharacters()
                         homeVM.fetchAllCharacters(from: containerIdentifier)
