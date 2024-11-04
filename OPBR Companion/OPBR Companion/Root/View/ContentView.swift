@@ -10,8 +10,6 @@ import SwiftUI
 struct ContentView: View {
     // Splash screen
     @State private var showSplashScreen: Bool = true
-    // View model
-    // private let contentVM = ContentViewModel()
     
     var body: some View {
         ZStack {

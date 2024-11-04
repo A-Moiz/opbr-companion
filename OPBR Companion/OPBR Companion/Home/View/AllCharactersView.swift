@@ -60,6 +60,7 @@ struct AllCharactersView: View {
             }
             .scrollIndicators(.hidden)
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 

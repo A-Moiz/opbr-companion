@@ -58,6 +58,10 @@ struct MedalSetsView: View {
                 .padding(.top, 10)
             }
             .scrollIndicators(.hidden)
+            
+            Text("NOTE: More sets will be added in the future.")
+                .font(.subheadline)
+                .padding()
         }
         .background(colourScheme == .dark ? Color.black.opacity(0.95) : Color.gray.opacity(0.05))
     }
