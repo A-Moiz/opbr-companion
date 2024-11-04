@@ -162,11 +162,12 @@ class HomeViewModel: ObservableObject {
                     guard let asset = record["image"] as? CKAsset,
                           let url = asset.fileURL,
                           let bestFor = record["bestFor"] as? [String],
+                          let medalTraits = record["medalTraits"] as? [String],
                           let description = record["description"] as? String else {
                         print("Failed to extract fields from record: \(record)")
                         return nil
                     }
-                    return MedalSet(imageURL: url, description: description, bestFor: bestFor)
+                    return MedalSet(imageURL: url, description: description, bestFor: bestFor, medalTraits: medalTraits)
                 }
             }
         }

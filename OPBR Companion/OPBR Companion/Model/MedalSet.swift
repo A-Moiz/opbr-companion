@@ -11,4 +11,5 @@ struct MedalSet {
     let imageURL: URL
     let description: String
     let bestFor: [String]
+    let medalTraits: [String]
 }
