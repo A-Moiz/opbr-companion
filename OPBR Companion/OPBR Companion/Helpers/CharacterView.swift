@@ -12,11 +12,11 @@ struct CharacterView: View {
     var character: Character
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var showMedalTagsView: Bool = false
 
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                
                 // Character Image
                 if let uiImage = UIImage(contentsOfFile: character.imageURL.path) {
                     Image(uiImage: uiImage)
@@ -53,8 +53,36 @@ struct CharacterView: View {
                             .foregroundColor(.blue)
                     }
                     .font(.subheadline)
+                    
+                    Divider()
+
+                    VStack {
+                        HStack {
+                            if let medal = UIImage(contentsOfFile: character.medalURL.path) {
+                                Image(uiImage: medal)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 75, height: 75)
+                                    .cornerRadius(15)
+                                    .shadow(radius: 5)
+                            }
+                            
+                            HStack {
+                                Image(systemName: "medal")
+                                Text("Medal trait: \(character.medalTrait)")
+                            }
+                            .font(.subheadline)
+                        }
+                        
+                        HStack {
+                            Image(systemName: "tag")
+                            Text("Tags: \(character.tags.joined(separator: ", "))")
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    }
                 }
-                .padding(.horizontal)
+                .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(UIColor.systemBackground).opacity(0.8))
                 .cornerRadius(10)
@@ -140,6 +168,19 @@ struct CharacterView: View {
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Character Guide Summary"), message: Text(alertMessage))
             }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                // Refresh Feed
+                Button(action: {
+                    showMedalTagsView = true
+                }) {
+                    Label("View All Medal Tags", systemImage: "tablecells")
+                }
+            }
+        }
+        .sheet(isPresented: $showMedalTagsView) {
+            MedalTagsView()
         }
         .background(Color(UIColor.systemGray6))
     }

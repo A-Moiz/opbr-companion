@@ -192,7 +192,10 @@ class HomeViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self?.characters = records.compactMap { record in
                     guard let asset = record["artwork"] as? CKAsset,
+                          let medal = record["medal"] as? CKAsset,
                           let url = asset.fileURL,
+                          let medalUrl = medal.fileURL,
+                          let medalTrait = record["medalTrait"] as? String,
                           let characterClass = record["class"] as? String,
                           let name = record["name"] as? String,
                           let title = record["title"] as? String,
@@ -204,6 +207,7 @@ class HomeViewModel: ObservableObject {
                     
                     // Optional fields
                     let tags = record["tags"] as? [String] ?? []
+                    let medalTags = record["medalTags"] as? [String] ?? []
                     let guide = record["guide"] as? String
                     let videoUrl = record["videoUrl"] as? String
                     
@@ -212,7 +216,7 @@ class HomeViewModel: ObservableObject {
                         self?.saveImageData(imageData, for: url)
                     }
                     
-                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl)
+                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl, medalURL: medalUrl, medalTrait: medalTrait, medalTags: medalTags)
                 }
                 
                 // Print the number of characters fetched

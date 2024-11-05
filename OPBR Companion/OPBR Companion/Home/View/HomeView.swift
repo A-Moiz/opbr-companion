@@ -18,6 +18,8 @@ struct HomeView: View {
     let containerIdentifier = "iCloud.OPBR-Companion"
     // Progress view
     @State private var isLoading: Bool = false
+    // View
+    @State private var showMedalTagsView: Bool = false
     
     // Dynamic title
     private var navigationTitle: String {
@@ -46,13 +48,22 @@ struct HomeView: View {
             .background(colourScheme == .dark ? Color.black.opacity(0.9) : Color.gray.opacity(0.1))
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    // Refresh Feed
-                    Button(action: { Task {
-                        homeVM.fetchAllCharacters(from: containerIdentifier)
-                        homeVM.fetchSupportImages(from: containerIdentifier)
-                        homeVM.fetchMedalSets(from: containerIdentifier)
-                    } }) {
-                        Label("Refresh", systemImage: "arrow.clockwise")
+                    Menu {
+                        Button(action: {
+                            Task {
+                                homeVM.fetchAllCharacters(from: containerIdentifier)
+                            }
+                        }) {
+                            Label("Refresh Characters", systemImage: "person.3.fill")
+                        }
+
+                        Button(action: {
+                            showMedalTagsView = true
+                        }) {
+                            Label("View Medal Tags", systemImage: "tablecells")
+                        }
+                    } label: {
+                        Label("Options", systemImage: "ellipsis.circle")
                     }
                 }
             }
@@ -60,6 +71,9 @@ struct HomeView: View {
                 if isLoading {
                     ProgressView()
                 }
+            }
+            .sheet(isPresented: $showMedalTagsView) {
+                MedalTagsView()
             }
             .onAppear {
                 isLoading = true

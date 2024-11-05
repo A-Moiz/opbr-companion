@@ -24,7 +24,13 @@ struct AllCharactersView: View {
                 character.characterClass.localizedCaseInsensitiveContains(searchText) ||
                 character.colour.localizedCaseInsensitiveContains(searchText) ||
                 character.name.localizedCaseInsensitiveContains(searchText) ||
-                character.title.localizedCaseInsensitiveContains(searchText)
+                character.title.localizedCaseInsensitiveContains(searchText) ||
+                character.tags.contains { characterTag in
+                    characterTag.localizedCaseInsensitiveContains(searchText)
+                } ||
+                character.medalTags.contains { medalTag in
+                    medalTag.localizedCaseInsensitiveContains(searchText)
+                }
             }
         }
     }
@@ -32,7 +38,7 @@ struct AllCharactersView: View {
     var body: some View {
         VStack {
             VStack {
-                Text("You can search for characters based on their class, colour, name, or title, such as 'Runner', 'Red', 'Luffy' or 'Egghead'.")
+                Text("You can search for characters by class, colour, name, title, or shared medal tags—like “Runner,” “Red,” “Luffy,” or “Egghead.")
                     .foregroundStyle(.gray)
                     .padding()
                 SearchBar(searchText: $searchText, text: $text)
@@ -60,6 +66,7 @@ struct AllCharactersView: View {
             }
             .scrollIndicators(.hidden)
         }
+        .padding(.top)
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }

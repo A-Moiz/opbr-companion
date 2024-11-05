@@ -63,6 +63,7 @@ struct MedalSetsView: View {
                 .font(.subheadline)
                 .padding()
         }
+        .padding(.top)
         .background(colourScheme == .dark ? Color.black.opacity(0.95) : Color.gray.opacity(0.05))
     }
 }
