@@ -11,32 +11,70 @@ struct AllCharactersView: View {
     // Search text
     @State private var searchText: String = ""
     @State private var text: String = "Search characters..."
+    // Filter tag
+    @State private var selectedIndex: Int? = nil
+    @State private var selectedTag: String? = nil
+    @State private var showTags: Bool = false
     // Colour scheme
     @Environment(\.colorScheme) private var colourScheme
     // View model
     @ObservedObject var homeVM: HomeViewModel
     
+    // Filtering characters
     private var filteredCharacters: [Character] {
-        if searchText.isEmpty {
-            return homeVM.characters
-        } else {
-            return homeVM.characters.filter { character in
+        var characters = homeVM.characters
+        
+        if let tag = selectedTag {
+            characters = characters.filter { character in
+                character.tags.contains(tag)
+            }
+        }
+        
+        if !searchText.isEmpty {
+            characters = characters.filter { character in
                 character.characterClass.localizedCaseInsensitiveContains(searchText) ||
                 character.colour.localizedCaseInsensitiveContains(searchText) ||
                 character.name.localizedCaseInsensitiveContains(searchText) ||
                 character.title.localizedCaseInsensitiveContains(searchText) ||
-                character.tags.contains { characterTag in
-                    characterTag.localizedCaseInsensitiveContains(searchText)
-                } ||
-                character.medalTags.contains { medalTag in
-                    medalTag.localizedCaseInsensitiveContains(searchText)
-                }
+                character.tags.contains(where: { $0.localizedCaseInsensitiveContains(searchText) })
             }
         }
+        
+        return characters
     }
     
     var body: some View {
         VStack {
+            HStack {
+                Button(action: {
+                    showTags.toggle()
+                    if !showTags {
+                        selectedTag = nil
+                    }
+                }) {
+                    HStack {
+                        Text(showTags ? "Hide character tags" : "Show character tags")
+                        Image(systemName: showTags ? "chevron.up" : "chevron.down")
+                    }
+                }
+                .padding()
+            }
+            
+            if showTags {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(homeVM.supportTagsArray.indices, id: \.self) { index in
+                            let tag = homeVM.supportTagsArray[index].0
+                            TagButton(label: tag, isSelected: selectedTag == tag) {
+                                selectedTag = (selectedTag == tag) ? nil : tag
+                                searchText = ""
+                            }
+                        }
+                    }
+                    .padding()
+                }
+            }
+            
             VStack {
                 Text("You can search for characters by class, colour, name, title, or shared medal tags—like “Runner,” “Red,” “Luffy,” or “Egghead.")
                     .foregroundStyle(.gray)

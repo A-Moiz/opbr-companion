@@ -20,6 +20,7 @@ struct HomeView: View {
     @State private var isLoading: Bool = false
     // View
     @State private var showMedalTagsView: Bool = false
+    @State private var showSupportTagsView: Bool = false
     
     // Dynamic title
     private var navigationTitle: String {
@@ -62,6 +63,12 @@ struct HomeView: View {
                         }) {
                             Label("View Medal Tags", systemImage: "tablecells")
                         }
+                        
+                        Button(action: {
+                            showSupportTagsView = true
+                        }) {
+                            Label("View Support Tags", systemImage: "tablecells")
+                        }
                     } label: {
                         Label("Options", systemImage: "ellipsis.circle")
                     }
@@ -73,7 +80,10 @@ struct HomeView: View {
                 }
             }
             .sheet(isPresented: $showMedalTagsView) {
-                MedalTagsView()
+                MedalTagsView(homeVM: homeVM)
+            }
+            .sheet(isPresented: $showSupportTagsView) {
+                SupportTagsView(homeVM: homeVM)
             }
             .onAppear {
                 isLoading = true

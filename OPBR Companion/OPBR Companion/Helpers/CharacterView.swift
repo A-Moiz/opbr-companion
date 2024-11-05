@@ -180,7 +180,7 @@ struct CharacterView: View {
             }
         }
         .sheet(isPresented: $showMedalTagsView) {
-            MedalTagsView()
+            MedalTagsView(homeVM: homeVM)
         }
         .background(Color(UIColor.systemGray6))
     }

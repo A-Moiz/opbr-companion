@@ -19,6 +19,73 @@ class HomeViewModel: ObservableObject {
     @Published var wantedCharacters: [Character] = []
     @Published var ownedCharacters: [Character] = []
     
+    // Medal/Support arrays
+    @Published var medalTagsArray: [(String, [String])] = [
+        ("Skill 1 Cooldown", ["East Blue", "The Grand Line", "Alabasta", "Sky Island", "Water 7 / Enies Lobby", "Thriller Bark", "Sabaody Archipelago / Island of Women", "Impel Down", "The Paramount War at Marineford", "2 Years Later", "Fish-Man Island", "Punk Hazard", "Dressrosa", "Reverie", "Zou / Whole Cake Island", "Land of Wano", "FILM STRONG WORLD", "FILM GOLD", "FILM Z", "STAMPEDE", "FILM RED", "ODYSSEY", "Bikini", "Holy Night", "Egghead"]),
+        
+        ("Skill 2 Cooldown", ["Navy", "The Seven Warlords of the Sea", "Straw Hat Pirates", "The Alvida Pirates", "Buggy Pirates", "Black Cat Pirates", "Krieg's Pirate Armada", "Arlong Pirates", "Baroque Works", "God's Army", "Whitebeard Pirates", "Red-Haired Pirates", "Kid Pirates", "Firetank Pirates", "Cipher Pol", "Revolutionary Army", "Animal Kingdom Pirates", "Big Mom Pirates", "Bonney Pirates", "Buggy's Delivery", "Mokomo Dukedom Musketeer", "Beautiful Pirates", "Barto Club", "Flying Pirates", "Fake Straw Hat Pirates", "Giant Pirate Crew"]),
+        
+        ("Dodge Cooldown", ["Paramecia", "Zoan", "Logia"]),
+        
+        ("Increase capture speed", ["Captain", "Combatant", "Sharp Shooter", "Cook", "Navigator", "Doctor", "Archaeologist", "Ship Carpenter", "Musician", "Helmsman", "Bounty Hunter", "Admiral", "Royalty", "Master Chief Petty Officer", "Navy Captain", "Chief of Staff", "Kozuki Clan / Kozuki Clan Servant", "Lead Performer", "Intelligence Agent", "Vice Admiral", "Kingsbird", "Officer Agent", "Fleet Admiral", "Pica Army", "Diamante Army", "Tobi Roppo", "Trebol Army", "Captain of the Revolutionary Army", "Headliner"]),
+        
+        ("Spawn Speed Boost", ["Fish-Man"]),
+        
+        ("Damage Reduction (Less Treasure)", ["Mantra", "Zombie", "Fish-Man Karate", "Six Powers", "Chambres"]),
+        
+        ("Damage Increase (Less Treasure)", ["Seraphim", "Worst Generation", "The Four Emperors", "Sweet 3 General", "New Kama", "Homies", "Ninja", "Germa 66", "Whitebeard Pirates Commander", "Sword"]),
+        
+        ("Damage Increase (Allies Nearby)", ["Blood Brothers", "Charlotte Family", "Gorgon Sisters", "Minks", "Giant"]),
+        
+        ("Damage Reduction (Solo at Treasure)", ["Heart Pirates", "Kuja Pirates", "Sun Pirates", "Don Quixote Family", "Child", "Roger Pirates / Ex-Roger Pirates", "Thriller Bark Pirates", "Blackbeard Pirates", "Straw Hat Fleet", "Alabasta Kingdom", "Former Rocks Pirates"])
+    ]
+    
+    @Published var supportTagsArray: [(String, [String])] = [
+        ("Attacker", ["Increase ATK by 200", "Increase Crit Damage dealt by 5%"]),
+        
+        ("Defender", ["Increase DEF by 200", "Increase Treasure Gauge recovery amount by 10%"]),
+        
+        ("Runner", ["Increase HP by 800", "Increase the base Treasure Gauge amount when you capture Treasure by 30%"]),
+        
+        ("East Blue", ["Increase damage to enemies with the element by 15%"]),
+        
+        ("Navy", ["When in the area around your captured treasure: Reduce knockback distance by 60%"]),
+        
+        ("The Seven Warlords of the Sea", ["When your HP is 50% or more: Increase status effect infliction time by 30%"]),
+        
+        ("Straw Hat Pirates", ["Reduce critical damage received by 30%"]),
+        
+        ("Whitebeard Pirates", ["When your HP is 50% or less: Increase status effect infliction time by 30%"]),
+        
+        ("Don Quixote Family", ["When your HP is 50% or less: Increase normal attack damage dealt by 15%"]),
+        
+        ("Paramecia", ["When your HP is 50% or less: Increase critical damage dealt by 20%"]),
+        
+        ("Zoan", ["Reduce damage received from enemies with the element you are weak against by 15%"]),
+        
+        ("Logia", ["When your HP is 50% or more: 100% chance of preventing stagger from character type 'long-range normal attack' characters normal attacks", "When your HP is 70% or more: Reduce damage received from character type 'long-range normal attack' characters normal attack by 50%"]),
+        
+        ("Captain", ["When your HP is 50% or less: 100% chance of preventing stagger from character type 'long-range normal attack' characters normal attacks", "When your HP is 30% or less: Reduce damage received from character type 'long-range normal attack' characters normal attack by 20%"]),
+        
+        ("The Grand Line", ["Reduce damage received from enemies with the same element by 15%"]),
+        
+        ("New World", ["Increase damage to enemies with the element you are weak against by 15%"]),
+        
+        ("Worst Generation", ["When in a treasure area: Increase knockback distance by 30%"]),
+        
+        ("Charlotte Family", ["When your HP is 70% or more: Reduce normal attack damage received by 15%"]),
+        
+        ("Kozuki Clan / Kozuki Clan Servant", ["When your HP is 50% or less: Reduce normal attack damage received by 15%"]),
+        
+        ("Animal Kingdom Pirates", ["When your HP is 70% or more: Increase normal attack damage dealt by 15%"]),
+        
+        ("Revolutionary Army", ["When your HP is 70% or more: Reduce knockback distance by 60%"]),
+        
+        ("Roger Pirates / Ex-Roger Pirates", ["When your HP is 50% or less: Reduce status effect infliction time by 30%"]),
+        
+        ("Fish-Man", ["When in the area around your enemies treasure area: Reduce knockback distance by 20% (MAX LVL 2)"]),
+    ]
+    
     // Alert
     @Published var alertMessage: String = ""
     @Published var showAlert: Bool = false

@@ -1,5 +1,5 @@
 //
-//  MedalTagsView.swift
+//  SupportTagsView.swift
 //  OPBR Companion
 //
 //  Created by Abdul Moiz on 05/11/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MedalTagsView: View {
+struct SupportTagsView: View {
     @State private var selectedIndex: Int? = nil
     @ObservedObject var homeVM: HomeViewModel
     
@@ -16,8 +16,8 @@ struct MedalTagsView: View {
             VStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        ForEach(homeVM.medalTagsArray.indices, id: \.self) { index in
-                            TagButton(label: homeVM.medalTagsArray[index].0, isSelected: selectedIndex == index) {
+                        ForEach(homeVM.supportTagsArray.indices, id: \.self) { index in
+                            TagButton(label: homeVM.supportTagsArray[index].0, isSelected: selectedIndex == index) {
                                 selectedIndex = (selectedIndex == index) ? nil : index
                             }
                         }
@@ -27,7 +27,7 @@ struct MedalTagsView: View {
                 
                 ScrollView {
                     VStack(spacing: 20) {
-                        ForEach(Array(homeVM.medalTagsArray.enumerated()), id: \.offset) { index, row in
+                        ForEach(Array(homeVM.supportTagsArray.enumerated()), id: \.offset) { index, row in
                             if selectedIndex == nil || selectedIndex == index {
                                 TagList(title: row.0, tags: row.1)
                             }
@@ -36,13 +36,13 @@ struct MedalTagsView: View {
                     .padding()
                 }
             }
-            .navigationTitle("Medal Tags")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Support Tags")
+            .toolbarTitleDisplayMode(.inline)
             .background(Color(UIColor.systemGray6))
         }
     }
 }
 
 #Preview {
-    MedalTagsView(homeVM: HomeViewModel())
+    SupportTagsView(homeVM: HomeViewModel())
 }
