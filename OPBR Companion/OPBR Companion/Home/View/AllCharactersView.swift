@@ -15,7 +15,7 @@ struct AllCharactersView: View {
     @Environment(\.colorScheme) private var colourScheme
     // View model
     @ObservedObject var homeVM: HomeViewModel
-    
+    // Filtering characters
     private var filteredCharacters: [Character] {
         var characters = homeVM.characters
         
@@ -33,6 +33,7 @@ struct AllCharactersView: View {
     
     var body: some View {
         VStack {
+            // Search bar
             VStack {
                 Text("You can search for characters by class, colour, name or title")
                     .foregroundStyle(.gray)

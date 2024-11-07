@@ -148,6 +148,13 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    func loadWantedCharacters() {
+        if let savedData = UserDefaults.standard.data(forKey: "wantedCharacters"),
+           let decodedCharacters = try? JSONDecoder().decode([Character].self, from: savedData) {
+            wantedCharacters = decodedCharacters
+        }
+    }
+    
     // Save and load image data locally
     private func localImagePath(for url: URL) -> URL {
         let fileName = url.lastPathComponent
@@ -170,13 +177,7 @@ class HomeViewModel: ObservableObject {
         return try? Data(contentsOf: path)
     }
     
-    func loadWantedCharacters() {
-        if let savedData = UserDefaults.standard.data(forKey: "wantedCharacters"),
-           let decodedCharacters = try? JSONDecoder().decode([Character].self, from: savedData) {
-            wantedCharacters = decodedCharacters
-        }
-    }
-    
+    // Getting support tag
     func getSupportMessage(for tag: String) -> String? {
             if let tagData = supportTagsArray.first(where: { $0.0 == tag }) {
                 return tagData.1.joined(separator: "\n\n")
@@ -184,6 +185,7 @@ class HomeViewModel: ObservableObject {
             return nil
         }
     
+    // Getting medal tag
     func getMedalMessage(for tag: String) -> String? {
         if let tagData = medalTagsArray.first(where: { $0.1.contains(tag) }) {
             let key = tagData.0
@@ -192,13 +194,7 @@ class HomeViewModel: ObservableObject {
         return nil
     }
     
-//    func getMedalMessage(for tag: String) -> String? {
-//        if let tagData = medalTagsArray.first(where: { $0.0 == tag }) {
-//            return tagData.1.joined(separator: "\n\n")
-//        }
-//        return nil
-//    }
-    
+    // Fetching support images
     func fetchSupportImages(from containerName: String) {
         let customContainer = CKContainer(identifier: containerName)
         let publicDatabase = customContainer.publicCloudDatabase
@@ -230,6 +226,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // Fetching medal sets
     func fetchMedalSets(from containerName: String) {
         let customContainer = CKContainer(identifier: containerName)
         let publicDatabase = customContainer.publicCloudDatabase
@@ -262,6 +259,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // Fetching all characters
     func fetchAllCharacters(from containerName: String) {
         let customContainer = CKContainer(identifier: containerName)
         let publicDatabase = customContainer.publicCloudDatabase
@@ -315,6 +313,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // Showing alerts
     func showAlert(message: String) {
         DispatchQueue.main.async {
             self.alertMessage = message

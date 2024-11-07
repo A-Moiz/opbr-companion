@@ -94,6 +94,9 @@ struct HomeView: View {
                 homeVM.fetchMedalSets(from: containerIdentifier)
                 isLoading = false
             }
+            .alert(isPresented: $homeVM.showAlert) {
+                Alert(title: Text(""), message: Text(homeVM.alertMessage), dismissButton: .default(Text("OK")))
+            }
         }
     }
 }

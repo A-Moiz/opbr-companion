@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct CharacterView: View {
+    // View model
     @ObservedObject var homeVM: HomeViewModel
+    // Character
     var character: Character
+    // Alerts
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
     @State private var alertTitle: String = ""
+    // Views
     @State private var showMedalTagsView: Bool = false
+    @State private var showSupportTagsView: Bool = false
     
     var body: some View {
         ScrollView {
@@ -244,16 +249,28 @@ struct CharacterView: View {
         }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                // Refresh Feed
-                Button(action: {
-                    showMedalTagsView = true
-                }) {
-                    Label("View All Medal Tags", systemImage: "tablecells")
+                Menu {
+                    Button(action: {
+                        showMedalTagsView = true
+                    }) {
+                        Label("View Medal Tags", systemImage: "tablecells")
+                    }
+                    
+                    Button(action: {
+                        showSupportTagsView = true
+                    }) {
+                        Label("View Support Tags", systemImage: "tablecells")
+                    }
+                } label: {
+                    Label("Options", systemImage: "ellipsis.circle")
                 }
             }
         }
         .sheet(isPresented: $showMedalTagsView) {
             MedalTagsView(homeVM: homeVM)
+        }
+        .sheet(isPresented: $showSupportTagsView) {
+            SupportTagsView(homeVM: homeVM)
         }
         .background(Color(UIColor.systemGray6))
     }
