@@ -22,7 +22,6 @@ struct SearchBar: View {
             Image(systemName: "x.circle")
                 .onTapGesture {
                     searchText = ""
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 }
         }
         .padding(.horizontal)

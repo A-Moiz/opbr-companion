@@ -177,6 +177,28 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    func getSupportMessage(for tag: String) -> String? {
+            if let tagData = supportTagsArray.first(where: { $0.0 == tag }) {
+                return tagData.1.joined(separator: "\n\n")
+            }
+            return nil
+        }
+    
+    func getMedalMessage(for tag: String) -> String? {
+        if let tagData = medalTagsArray.first(where: { $0.1.contains(tag) }) {
+            let key = tagData.0
+            return key
+        }
+        return nil
+    }
+    
+//    func getMedalMessage(for tag: String) -> String? {
+//        if let tagData = medalTagsArray.first(where: { $0.0 == tag }) {
+//            return tagData.1.joined(separator: "\n\n")
+//        }
+//        return nil
+//    }
+    
     func fetchSupportImages(from containerName: String) {
         let customContainer = CKContainer(identifier: containerName)
         let publicDatabase = customContainer.publicCloudDatabase
@@ -272,18 +294,19 @@ class HomeViewModel: ObservableObject {
                         return nil
                     }
                     
-                    // Optional fields
                     let tags = record["tags"] as? [String] ?? []
                     let medalTags = record["medalTags"] as? [String] ?? []
                     let guide = record["guide"] as? String
                     let videoUrl = record["videoUrl"] as? String
+                    let recommendedSetAssets = record["recommendedSet"] as? [CKAsset]
+                    let recommendedSet = recommendedSetAssets?.compactMap { $0.fileURL }
                     
                     // Save the image data if needed
                     if let imageData = try? Data(contentsOf: url) {
                         self?.saveImageData(imageData, for: url)
                     }
                     
-                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl, medalURL: medalUrl, medalTrait: medalTrait, medalTags: medalTags)
+                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl, medalURL: medalUrl, medalTrait: medalTrait, medalTags: medalTags, recommendedSet: recommendedSet)
                 }
                 
                 // Print the number of characters fetched

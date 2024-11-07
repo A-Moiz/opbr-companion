@@ -53,9 +53,11 @@ struct HomeView: View {
                         Button(action: {
                             Task {
                                 homeVM.fetchAllCharacters(from: containerIdentifier)
+                                homeVM.fetchSupportImages(from: containerIdentifier)
+                                homeVM.fetchMedalSets(from: containerIdentifier)
                             }
                         }) {
-                            Label("Refresh Characters", systemImage: "person.3.fill")
+                            Label("Refresh Feed", systemImage: "person.3.fill")
                         }
 
                         Button(action: {

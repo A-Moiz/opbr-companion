@@ -19,4 +19,5 @@ struct Character: Codable, Equatable {
     let medalURL: URL
     let medalTrait: String
     let medalTags: [String]
+    let recommendedSet: [URL]?
 }

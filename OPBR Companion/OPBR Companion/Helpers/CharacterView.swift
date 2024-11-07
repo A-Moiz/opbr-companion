@@ -12,33 +12,52 @@ struct CharacterView: View {
     var character: Character
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var alertTitle: String = ""
     @State private var showMedalTagsView: Bool = false
-
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Character Image
                 if let uiImage = UIImage(contentsOfFile: character.imageURL.path) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 300, height: 300)
+                        .frame(width: 400, height: 400)
                         .cornerRadius(15)
                         .shadow(radius: 5)
                 }
                 
-                // Character Info Section
                 VStack(alignment: .leading, spacing: 8) {
                     Text(character.title)
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    HStack {
-                        Image(systemName: "tag")
-                        Text("Tags: \(character.tags.joined(separator: ", "))")
+                    VStack {
+                        HStack {
+                            Image(systemName: "tag")
+                            Text("Character Tags:")
+                        }
+                        .padding(.bottom)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(character.tags, id: \.self) { tag in
+                                Text(tag)
+                                    .foregroundColor(.blue)
+                                    .font(.system(size: 20))
+                                    .onTapGesture {
+                                        if let message = homeVM.getSupportMessage(for: tag) {
+                                            alertMessage = message
+                                            alertTitle = "\(tag) Support Tag"
+                                            showAlert = true
+                                        }
+                                    }
+                            }
+                        }
+                        
                     }
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .padding(.vertical)
+                    
+                    Divider()
                     
                     HStack {
                         Image(systemName: "paintpalette")
@@ -55,7 +74,7 @@ struct CharacterView: View {
                     .font(.subheadline)
                     
                     Divider()
-
+                    
                     VStack {
                         HStack {
                             if let medal = UIImage(contentsOfFile: character.medalURL.path) {
@@ -74,12 +93,65 @@ struct CharacterView: View {
                             .font(.subheadline)
                         }
                         
-                        HStack {
-                            Image(systemName: "tag")
-                            Text("Tags: \(character.tags.joined(separator: ", "))")
+                        VStack {
+                            HStack {
+                                Image(systemName: "tag")
+                                Text("Medal Tags:")
+                            }
+                            .padding(.bottom)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(character.medalTags, id: \.self) { tag in
+                                    Text(tag)
+                                        .foregroundColor(.blue)
+                                        .font(.system(size: 20))
+                                        .onTapGesture {
+                                            if let message = homeVM.getMedalMessage(for: tag) {
+                                                alertMessage = message
+                                                alertTitle = "\(tag) Medal Tag"
+                                                showAlert = true
+                                            }
+                                        }
+                                }
+                            }
+                            
                         }
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .padding(.vertical)
+                    }
+                    .padding()
+                    
+                    if let recommendedSet = character.recommendedSet, !recommendedSet.isEmpty {
+                        Divider()
+                        VStack(alignment: .leading) {
+                            Text("Recommended Set")
+                                .font(.headline)
+                                .padding(.bottom, 5)
+                            
+                            HStack(spacing: 15) {
+                                ForEach(recommendedSet, id: \.self) { url in
+                                    if let uiImage = UIImage(contentsOfFile: url.path) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 75, height: 75)
+                                            .cornerRadius(10)
+                                            .shadow(radius: 5)
+                                    } else {
+                                        Rectangle()
+                                            .fill(Color.gray.opacity(0.3))
+                                            .frame(width: 75, height: 75)
+                                            .cornerRadius(10)
+                                            .overlay(Text("Image unavailable").font(.caption).foregroundColor(.gray))
+                                    }
+                                }
+                            }
+                            
+                            Text("This set provides a well-rounded boost to skill 1 cooldown and capture speed, ideal for helping this runner continuously capture flags and stay on the move.")
+                            
+                            Text("Note that these recommendations may change as more medals are introduced to the game")
+                                .padding(.top)
+                        }
+                        .padding()
                     }
                 }
                 .padding()
@@ -91,6 +163,7 @@ struct CharacterView: View {
                     HStack {
                         Button(action: {
                             alertMessage = character.guide ?? "No guide available"
+                            alertTitle = "Character Guide Summary"
                             showAlert = true
                         }) {
                             HStack {
@@ -166,7 +239,7 @@ struct CharacterView: View {
             .padding()
             .navigationTitle(character.name)
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("Character Guide Summary"), message: Text(alertMessage))
+                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
         }
         .toolbar {
