@@ -10,14 +10,15 @@ import SwiftUI
 struct SupportCardView: View {
     var supportImage: SupportImage
     @Environment(\.colorScheme) private var colourScheme
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if let uiImage = UIImage(contentsOfFile: supportImage.imageURL.path) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 250)
+                    .frame(height: imageHeight())
+                    // .frame(height: 250)
                     .cornerRadius(15)
                     .shadow(radius: 4)
             } else {
@@ -26,7 +27,7 @@ struct SupportCardView: View {
                     .frame(height: 180)
                     .cornerRadius(15)
             }
-
+            
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
                     Image(systemName: "tag.fill")
@@ -35,7 +36,7 @@ struct SupportCardView: View {
                         .font(.subheadline)
                         .foregroundColor(.primary)
                 }
-
+                
                 HStack {
                     Image(systemName: "circle.fill")
                         .foregroundStyle(color(for: supportImage.colour))
@@ -56,7 +57,11 @@ struct SupportCardView: View {
                 .shadow(radius: 5)
         )
     }
-
+    
+    private func imageHeight() -> CGFloat {
+        UIDevice.current.userInterfaceIdiom == .pad ? 750 : 250
+    }
+    
     func color(for colourName: String) -> Color {
         switch colourName {
         case "Red":
