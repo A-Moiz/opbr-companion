@@ -8,20 +8,24 @@
 import SwiftUI
 
 struct SupportView: View {
-    // Search text
-    @State private var searchText: String = ""
-    @State private var text: String = "Search support colour or tag..."
     // Colour scheme
     @Environment(\.colorScheme) private var colourScheme
     // View model
     @ObservedObject var homeVM: HomeViewModel
     // Tags
     @State private var selectedTags: [String] = []
+    @State private var selectedColors: [String] = []
     @State private var showTags: Bool = false
-    // Filtered support
+    @State private var showColorTags: Bool = false
+
+    // Color filter options
+    private let colorTags = ["Red", "Green", "Blue", "Light", "Dark"]
+
+    // Filtered support images based on selected tags and colors
     private var filteredSupport: [SupportImage] {
         var supports = homeVM.supportImages
 
+        // Filter by support tags
         if !selectedTags.isEmpty {
             supports = supports.filter { supportImage in
                 selectedTags.allSatisfy { tag in
@@ -30,15 +34,13 @@ struct SupportView: View {
             }
         }
 
-        if !searchText.isEmpty {
+        // Filter by color tags
+        if !selectedColors.isEmpty {
             supports = supports.filter { supportImage in
-                supportImage.colour.localizedCaseInsensitiveContains(searchText) ||
-                supportImage.tags.contains { supportTag in
-                    supportTag.localizedCaseInsensitiveContains(searchText)
-                }
+                selectedColors.contains(supportImage.colour)
             }
         }
-
+        
         return supports
     }
 
@@ -47,6 +49,8 @@ struct SupportView: View {
             Text("Support percentages vary between users. Use these examples to guide your character choices and configurations.")
                 .foregroundStyle(.gray)
                 .padding()
+
+            // Button to show/hide support tags
             HStack {
                 Button(action: {
                     showTags.toggle()
@@ -59,6 +63,7 @@ struct SupportView: View {
                 .padding()
             }
 
+            // Support Tags
             if showTags {
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), spacing: 10)]) {
@@ -69,7 +74,6 @@ struct SupportView: View {
                                 } else {
                                     selectedTags.append(tag)
                                 }
-                                searchText = ""
                             }
                         }
                     }
@@ -77,6 +81,38 @@ struct SupportView: View {
                 }
             }
 
+            // Button to show/hide color tags
+            HStack {
+                Button(action: {
+                    showColorTags.toggle()
+                }) {
+                    HStack {
+                        Text(showColorTags ? "Hide color tags" : "Show color tags")
+                        Image(systemName: showColorTags ? "chevron.up" : "chevron.down")
+                    }
+                }
+                .padding()
+            }
+
+            // Color Tags
+            if showColorTags {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(colorTags, id: \.self) { color in
+                            TagButton(label: color, isSelected: selectedColors.contains(color)) {
+                                if selectedColors.contains(color) {
+                                    selectedColors.removeAll { $0 == color }
+                                } else {
+                                    selectedColors.append(color)
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                }
+            }
+
+            // Filtered support images
             ScrollView {
                 LazyVStack(spacing: 20) {
                     if filteredSupport.isEmpty {

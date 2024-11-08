@@ -40,6 +40,7 @@ struct AllCharactersView: View {
                     .padding()
                 SearchBar(searchText: $searchText, text: $text)
             }
+            .padding(.top)
             
             Divider()
             
