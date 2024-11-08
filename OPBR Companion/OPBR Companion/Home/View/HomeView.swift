@@ -21,6 +21,9 @@ struct HomeView: View {
     // View
     @State private var showMedalTagsView: Bool = false
     @State private var showSupportTagsView: Bool = false
+    // Videos
+    @State private var supportVidUrl: String = "https://youtu.be/V4LvGE_h7dc?feature=shared"
+    @State private var medalVidUrl: String = "https://youtu.be/1pVs3GxZAfg?feature=shared"
     
     // Dynamic title
     private var navigationTitle: String {
@@ -70,6 +73,22 @@ struct HomeView: View {
                             showSupportTagsView = true
                         }) {
                             Label("View Support Tags", systemImage: "tablecells")
+                        }
+                        
+                        Button(action: {
+                            if let url = URL(string: supportVidUrl) {
+                                homeVM.videoGuide(videoUrl: url)
+                            }
+                        }) {
+                            Label("Watch support guide video", systemImage: "video")
+                        }
+                        
+                        Button(action: {
+                            if let url = URL(string: medalVidUrl) {
+                                homeVM.videoGuide(videoUrl: url)
+                            }
+                        }) {
+                            Label("Watch medal guide video", systemImage: "video")
                         }
                     } label: {
                         Label("Options", systemImage: "ellipsis.circle")

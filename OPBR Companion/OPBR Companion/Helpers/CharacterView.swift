@@ -98,7 +98,7 @@ struct CharacterView: View {
                             icon: "video",
                             backgroundColor: .red,
                             action: {
-                                videoGuide(videoUrl: videoUrl)
+                                homeVM.videoGuide(videoUrl: videoUrl)
                             }
                         )
                     }
@@ -163,10 +163,6 @@ struct CharacterView: View {
             SupportTagsView(homeVM: homeVM)
         }
         .background(Color(UIColor.systemGray6))
-    }
-    
-    func videoGuide(videoUrl: URL) {
-        UIApplication.shared.open(videoUrl, options: [:], completionHandler: nil)
     }
 }
 

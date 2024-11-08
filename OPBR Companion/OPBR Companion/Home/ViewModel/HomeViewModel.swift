@@ -309,11 +309,13 @@ class HomeViewModel: ObservableObject {
                     
                     return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl, medalURL: medalUrl, medalTrait: medalTrait, medalTags: medalTags, recommendedSet: recommendedSet, setMessage: setMessage, recommededStats: recommendedStats, statMessage: statMessage)
                 }
-                
-                // Print the number of characters fetched
-                print("Fetched \(self?.characters.count ?? 0) characters")
             }
         }
+    }
+    
+    // Opening video function
+    func videoGuide(videoUrl: URL) {
+        UIApplication.shared.open(videoUrl, options: [:], completionHandler: nil)
     }
     
     // Showing alerts
