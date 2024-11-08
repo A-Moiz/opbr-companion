@@ -20,4 +20,7 @@ struct Character: Codable, Equatable {
     let medalTrait: String
     let medalTags: [String]
     let recommendedSet: [URL]?
+    let setMessage: String?
+    let recommededStats: [String]?
+    let statMessage: String?
 }

@@ -37,30 +37,7 @@ struct CharacterView: View {
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    VStack {
-                        HStack {
-                            Image(systemName: "tag")
-                            Text("Character Tags:")
-                        }
-                        .padding(.bottom)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            ForEach(character.tags, id: \.self) { tag in
-                                Text(tag)
-                                    .foregroundColor(.blue)
-                                    .font(.system(size: 20))
-                                    .onTapGesture {
-                                        if let message = homeVM.getSupportMessage(for: tag) {
-                                            alertMessage = message
-                                            alertTitle = "\(tag) Support Tag"
-                                            showAlert = true
-                                        }
-                                    }
-                            }
-                        }
-                        
-                    }
-                    .padding(.vertical)
+                    CharacterTagsView(tags: character.tags, homeVM: homeVM, showAlert: $showAlert, alertMessage: $alertMessage, alertTitle: $alertTitle)
                     
                     Divider()
                     
@@ -80,83 +57,20 @@ struct CharacterView: View {
                     
                     Divider()
                     
-                    VStack {
-                        HStack {
-                            if let medal = UIImage(contentsOfFile: character.medalURL.path) {
-                                Image(uiImage: medal)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 75, height: 75)
-                                    .cornerRadius(15)
-                                    .shadow(radius: 5)
-                            }
-                            
-                            HStack {
-                                Image(systemName: "medal")
-                                Text("Medal trait: \(character.medalTrait)")
-                            }
-                            .font(.subheadline)
-                        }
-                        
-                        VStack {
-                            HStack {
-                                Image(systemName: "tag")
-                                Text("Medal Tags:")
-                            }
-                            .padding(.bottom)
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                ForEach(character.medalTags, id: \.self) { tag in
-                                    Text(tag)
-                                        .foregroundColor(.blue)
-                                        .font(.system(size: 20))
-                                        .onTapGesture {
-                                            if let message = homeVM.getMedalMessage(for: tag) {
-                                                alertMessage = message
-                                                alertTitle = "\(tag) Medal Tag"
-                                                showAlert = true
-                                            }
-                                        }
-                                }
-                            }
-                            
-                        }
-                        .padding(.vertical)
-                    }
-                    .padding()
+                    MedalSectionView(character: character, homeVM: homeVM, showAlert: $showAlert, alertMessage: $alertMessage, alertTitle: $alertTitle)
                     
                     if let recommendedSet = character.recommendedSet, !recommendedSet.isEmpty {
-                        Divider()
-                        VStack(alignment: .leading) {
-                            Text("Recommended Set")
-                                .font(.headline)
-                                .padding(.bottom, 5)
-                            
-                            HStack(spacing: 15) {
-                                ForEach(recommendedSet, id: \.self) { url in
-                                    if let uiImage = UIImage(contentsOfFile: url.path) {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 75, height: 75)
-                                            .cornerRadius(10)
-                                            .shadow(radius: 5)
-                                    } else {
-                                        Rectangle()
-                                            .fill(Color.gray.opacity(0.3))
-                                            .frame(width: 75, height: 75)
-                                            .cornerRadius(10)
-                                            .overlay(Text("Image unavailable").font(.caption).foregroundColor(.gray))
-                                    }
-                                }
-                            }
-                            
-                            Text("This set provides a well-rounded boost to skill 1 cooldown and capture speed, ideal for helping this runner continuously capture flags and stay on the move.")
-                            
-                            Text("Note that these recommendations may change as more medals are introduced to the game")
-                                .padding(.top)
+                        if let setMessage = character.setMessage, !setMessage.isEmpty {
+                            Divider()
+                            RecommendedSetView(recommendedSet: recommendedSet, setMessage: setMessage)
                         }
-                        .padding()
+                    }
+                    
+                    if let recommendedStats = character.recommededStats, !recommendedStats.isEmpty {
+                        if let statMessage = character.statMessage, !statMessage.isEmpty {
+                            Divider()
+                            RecommendedStatView(recommendedStats: recommendedStats, statMessage: statMessage)
+                        }
                     }
                 }
                 .padding()
@@ -165,76 +79,52 @@ struct CharacterView: View {
                 .cornerRadius(10)
                 
                 VStack(spacing: 16) {
-                    HStack {
-                        Button(action: {
+                    // Character Guide Button
+                    CustomActionButton(
+                        title: "Character Guide",
+                        icon: "book.pages",
+                        backgroundColor: .blue,
+                        action: {
                             alertMessage = character.guide ?? "No guide available"
                             alertTitle = "Character Guide Summary"
                             showAlert = true
-                        }) {
-                            HStack {
-                                Image(systemName: "book.pages")
-                                Text("Character Guide")
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
                         }
-                    }
+                    )
                     
+                    // Video Guide Button
                     if let videoUrl = URL(string: character.videoUrl ?? "") {
-                        HStack {
-                            Button(action: {
+                        CustomActionButton(
+                            title: "Watch Video Guide",
+                            icon: "video",
+                            backgroundColor: .red,
+                            action: {
                                 videoGuide(videoUrl: videoUrl)
-                            }) {
-                                HStack {
-                                    Image(systemName: "video")
-                                    Text("Watch Video Guide")
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.red)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
                             }
-                        }
+                        )
                     }
                     
-                    HStack {
-                        if !homeVM.isCharacterWanted(character) {
-                            Button(action: {
+                    // Mark as Owned Button
+                    if !homeVM.isCharacterWanted(character) {
+                        CustomActionButton(
+                            title: homeVM.isCharacterOwned(character) ? "Owned" : "Mark as Owned",
+                            icon: homeVM.isCharacterOwned(character) ? "checkmark.square.fill" : "square",
+                            backgroundColor: .green,
+                            action: {
                                 homeVM.toggleCharacterOwnership(for: character)
-                            }) {
-                                HStack {
-                                    Image(systemName: homeVM.isCharacterOwned(character) ? "checkmark.square.fill" : "square")
-                                    Text(homeVM.isCharacterOwned(character) ? "Owned" : "Mark as Owned")
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.green)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
                             }
-                        }
+                        )
                     }
                     
-                    HStack {
-                        if !homeVM.isCharacterOwned(character) {
-                            Button(action: {
+                    // Mark as Wanted Button
+                    if !homeVM.isCharacterOwned(character) {
+                        CustomActionButton(
+                            title: homeVM.isCharacterWanted(character) ? "Wanted" : "Mark as Wanted",
+                            icon: homeVM.isCharacterWanted(character) ? "star.fill" : "star",
+                            backgroundColor: .orange,
+                            action: {
                                 homeVM.toggleCharacterWant(for: character)
-                            }) {
-                                HStack {
-                                    Image(systemName: homeVM.isCharacterWanted(character) ? "star.fill" : "star")
-                                    Text(homeVM.isCharacterWanted(character) ? "Wanted" : "Mark as Wanted")
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.orange)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
                             }
-                        }
+                        )
                     }
                 }
                 .padding(.horizontal)
@@ -277,6 +167,197 @@ struct CharacterView: View {
     
     func videoGuide(videoUrl: URL) {
         UIApplication.shared.open(videoUrl, options: [:], completionHandler: nil)
+    }
+}
+
+struct CharacterTagsView: View {
+    let tags: [String]
+    let homeVM: HomeViewModel
+    @Binding var showAlert: Bool
+    @Binding var alertMessage: String
+    @Binding var alertTitle: String
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Image(systemName: "tag")
+                Text("Character Tags:")
+            }
+            .padding(.bottom)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(tags, id: \.self) { tag in
+                    Text(tag)
+                        .foregroundColor(.blue)
+                        .font(.system(size: 20))
+                        .onTapGesture {
+                            if let message = homeVM.getSupportMessage(for: tag) {
+                                alertMessage = message
+                                alertTitle = "\(tag) Support Tag"
+                                showAlert = true
+                            }
+                        }
+                }
+            }
+        }
+        .padding(.vertical)
+    }
+}
+
+struct RecommendedSetView: View {
+    let recommendedSet: [URL]
+    let setMessage: String
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Recommended Set")
+                .font(.headline)
+                .padding(.bottom, 5)
+            
+            HStack(spacing: 15) {
+                ForEach(recommendedSet, id: \.self) { url in
+                    if let uiImage = UIImage(contentsOfFile: url.path) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 75, height: 75)
+                            .cornerRadius(10)
+                            .shadow(radius: 5)
+                    } else {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(width: 75, height: 75)
+                            .cornerRadius(10)
+                            .overlay(Text("Image unavailable").font(.caption).foregroundColor(.gray))
+                    }
+                }
+            }
+            
+            Text(setMessage)
+            
+            Text("Note that these recommendations may change as more medals are introduced to the game")
+                .padding(.top)
+        }
+        .padding()
+    }
+}
+
+struct RecommendedStatView: View {
+    let recommendedStats: [String]
+    let statMessage: String
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Recommended Stats")
+                .font(.headline)
+                .padding(.bottom, 5)
+            
+            HStack(spacing: 4) {
+                ForEach(recommendedStats, id: \.self) { stat in
+                    Text(stat)
+                        .font(.system(size: 20))
+                }
+            }
+            
+            Text(statMessage)
+            
+            Text("Note that these recommendations may change if this character gets buffed or nerfed in the future.")
+                .padding(.top)
+        }
+        .padding()
+    }
+}
+
+struct MedalSectionView: View {
+    let character: Character
+    let homeVM: HomeViewModel
+    @Binding var showAlert: Bool
+    @Binding var alertMessage: String
+    @Binding var alertTitle: String
+    
+    var body: some View {
+        VStack {
+            HStack {
+                if let medal = UIImage(contentsOfFile: character.medalURL.path) {
+                    Image(uiImage: medal)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 75, height: 75)
+                        .cornerRadius(15)
+                        .shadow(radius: 5)
+                }
+                
+                HStack {
+                    Image(systemName: "medal")
+                    Text("Medal trait: \(character.medalTrait)")
+                }
+                .font(.subheadline)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(character.medalTags, id: \.self) { tag in
+                    Text(tag)
+                        .foregroundColor(.blue)
+                        .font(.system(size: 20))
+                        .onTapGesture {
+                            if let message = homeVM.getMedalMessage(for: tag) {
+                                alertMessage = message
+                                alertTitle = "\(tag) Medal Tag"
+                                showAlert = true
+                            }
+                        }
+                }
+            }
+            .padding(.vertical)
+        }
+        .padding()
+    }
+}
+
+struct CharacterGuideButton: View {
+    let character: Character
+    @Binding var showAlert: Bool
+    @Binding var alertMessage: String
+    @Binding var alertTitle: String
+    
+    var body: some View {
+        Button(action: {
+            alertMessage = character.guide ?? "No guide available"
+            alertTitle = "Character Guide Summary"
+            showAlert = true
+        }) {
+            HStack {
+                Image(systemName: "book.pages")
+                Text("Character Guide")
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+        }
+    }
+}
+
+struct CustomActionButton: View {
+    let title: String
+    let icon: String
+    let backgroundColor: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                Text(title)
+                    .fontWeight(.semibold)
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(backgroundColor)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+        }
     }
 }
 

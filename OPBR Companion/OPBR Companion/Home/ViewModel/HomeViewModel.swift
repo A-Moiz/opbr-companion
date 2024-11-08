@@ -10,7 +10,7 @@ import CloudKit
 import UIKit
 
 class HomeViewModel: ObservableObject {
-    // Images array
+    // Record Arrays
     @Published var supportImages: [SupportImage] = []
     @Published var medalSets: [MedalSet] = []
     @Published var characters: [Character] = []
@@ -296,15 +296,18 @@ class HomeViewModel: ObservableObject {
                     let medalTags = record["medalTags"] as? [String] ?? []
                     let guide = record["guide"] as? String
                     let videoUrl = record["videoUrl"] as? String
+                    let recommendedStats = record["recommendedStats"] as? [String] ?? []
+                    let statMessage = record["statMessage"] as? String
                     let recommendedSetAssets = record["recommendedSet"] as? [CKAsset]
                     let recommendedSet = recommendedSetAssets?.compactMap { $0.fileURL }
+                    let setMessage = record["setMessage"] as? String
                     
                     // Save the image data if needed
                     if let imageData = try? Data(contentsOf: url) {
                         self?.saveImageData(imageData, for: url)
                     }
                     
-                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl, medalURL: medalUrl, medalTrait: medalTrait, medalTags: medalTags, recommendedSet: recommendedSet)
+                    return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl, medalURL: medalUrl, medalTrait: medalTrait, medalTags: medalTags, recommendedSet: recommendedSet, setMessage: setMessage, recommededStats: recommendedStats, statMessage: statMessage)
                 }
                 
                 // Print the number of characters fetched
