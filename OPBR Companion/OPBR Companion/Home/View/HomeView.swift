@@ -21,6 +21,7 @@ struct HomeView: View {
     // View
     @State private var showMedalTagsView: Bool = false
     @State private var showSupportTagsView: Bool = false
+    @State private var showStatusView: Bool = false
     // Videos
     @State private var supportVidUrl: String = "https://youtu.be/V4LvGE_h7dc?feature=shared"
     @State private var medalVidUrl: String = "https://youtu.be/1pVs3GxZAfg?feature=shared"
@@ -62,6 +63,12 @@ struct HomeView: View {
                         }) {
                             Label("Refresh Feed", systemImage: "person.3.fill")
                         }
+                        
+                        Button(action: {
+                            showStatusView = true
+                        }) {
+                            Label("View All Status Effects", systemImage: "tablecells")
+                        }
 
                         Button(action: {
                             showMedalTagsView = true
@@ -99,6 +106,9 @@ struct HomeView: View {
                 if isLoading {
                     ProgressView()
                 }
+            }
+            .sheet(isPresented: $showStatusView) {
+                StatusEffectsView(homeVM: homeVM)
             }
             .sheet(isPresented: $showMedalTagsView) {
                 MedalTagsView(homeVM: homeVM)

@@ -83,7 +83,41 @@ class HomeViewModel: ObservableObject {
         
         ("Roger Pirates / Ex-Roger Pirates", ["When your HP is 50% or less: Reduce status effect infliction time by 30%"]),
         
-        ("Fish-Man", ["When in the area around your enemies treasure area: Reduce knockback distance by 20% (MAX LVL 2)"]),
+        ("Fish-Man", ["When in the area around your enemies treasure area: Reduce knockback distance by 20% (MAX LVL 2)"])
+    ]
+    
+    // Status effect arrays
+    @Published var fixedDmgStatus: [(String, [String])] = [
+        ("Venom", ["Effect: 2.5% damage every second", "Example character: Magellan"]),
+        ("Poison", ["Effect: 1.15% damage every second", "Example character: Reiju"]),
+        ("Stolen Heart", ["Effect: 6% damage every 6 seconds", "Example character: Dressrosa Law"]),
+        ("Shock", ["Effect: 100 damage every second", "Example character: Raid Nami"])
+    ]
+    
+    @Published var immobilisingStatus: [(String, [String])] = [
+        ("Tremor", ["Effect: Immobilises character", "Example character: Edward Newgate"]),
+        ("Freeze", ["Effect: Immobilises character", "Example character: Kuzan"]),
+        ("Entrance", ["Effect: Immobilises character", "Example character: Stampede Boa Bancock"]),
+        ("Stun", ["Effect: Immobilises character", "Example character: Hakuba"]),
+        ("Gold", ["Effect: Immobilises character", "Example character: Gild Tesoro"]),
+        ("Stun", ["Effect: Immobilises character", "Example character: Hakuba"]),
+        ("Sleep", ["Effect: Immobilises character", "Example character: Raid Usopp"]),
+        ("Candyman", ["Effect: Immobilises character", "Example character: Charlotte Perospero"])
+    ]
+    
+    @Published var selfStatus: [(String, [String])] = [
+        ("Color of Arms", ["Effect: Increased ATK and CRIT rate", "Example character: Dressrosa Zoro"]),
+        ("King of Hell", ["Effect: Recovers 50% HP when receiving damage that would otherwise result in a KO, can bypass enemies to capture the treasure, resists stagger and knockback, and nullifies immobilising status effects.", "Example character: Egghead Zoro"]),
+        ("Red-Haired Haki", ["Effect: Nullifies status effects, resists stagger, and can only be targeted by normal attacks.", "Example character: FILM RED Shanks"]),
+        ("Electrified", ["Effect: Deals a mid-range attack with a chance to shock, nullifies stagger and grants status effects nullification", "Example character: Charlotte Linlin"])
+    ]
+    
+    @Published var otherStatus: [(String, [String])] = [
+        ("Recovery Blocked", ["Effect: Character is unable to heal", "Example character: Raid Law"]),
+        ("Clawed", ["Effect: Receive % damage and unable to use holding attacks (normal button and skills)", "Example character: Egghead Rob Lucci"]),
+        ("Confuse", ["Effect: Inverts characters movements", "Example character: Don Quixote Doflamingo"]),
+        ("Calm", ["Effect: Enemies unable to attack", "Example character: Ms. Goldenweek"]),
+        ("Intimidate", ["Effect: Enemies unable to attack", "Example character: Ben Beckman"])
     ]
     
     // Alert
