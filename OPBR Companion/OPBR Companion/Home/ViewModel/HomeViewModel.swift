@@ -91,7 +91,10 @@ class HomeViewModel: ObservableObject {
         ("Venom", ["Effect: 2.5% damage every second", "Example character: Magellan"]),
         ("Poison", ["Effect: 1.15% damage every second", "Example character: Reiju"]),
         ("Stolen Heart", ["Effect: 6% damage every 6 seconds", "Example character: Dressrosa Law"]),
-        ("Shock", ["Effect: 100 damage every second", "Example character: Raid Nami"])
+        ("Shock", ["Effect: 100 damage every second", "Example character: Raid Nami"]),
+        ("Aflame", ["Effect: 90 damage every second", "Example character: Sabo"]),
+        ("Frostbite", ["Effect: % damage based on Frostbite level (10%, 20%, 50%)", "Example character: Yamato"]),
+        ("Incinerate", ["Effect: 4% damage every second", "Example character: Sakazuki"])
     ]
     
     @Published var immobilisingStatus: [(String, [String])] = [
@@ -102,14 +105,20 @@ class HomeViewModel: ObservableObject {
         ("Gold", ["Effect: Immobilises character", "Example character: Gild Tesoro"]),
         ("Stun", ["Effect: Immobilises character", "Example character: Hakuba"]),
         ("Sleep", ["Effect: Immobilises character", "Example character: Raid Usopp"]),
-        ("Candyman", ["Effect: Immobilises character", "Example character: Charlotte Perospero"])
+        ("Candyman", ["Effect: Immobilises character", "Example character: Charlotte Perospero"]),
+        ("Gravity", ["Effect: Immobilises character", "Example character: Issho"]),
+        ("Bind", ["Effect: Immobilises character", "Example character: Hina"]),
+        ("Edit", ["Effect: Immobilises character", "Example character: Charlotte Pudding"]),
+        ("Spiderweb", ["Effect: Immobilises character", "Example character: Black Maria"])
     ]
     
     @Published var selfStatus: [(String, [String])] = [
         ("Color of Arms", ["Effect: Increased ATK and CRIT rate", "Example character: Dressrosa Zoro"]),
         ("King of Hell", ["Effect: Recovers 50% HP when receiving damage that would otherwise result in a KO, can bypass enemies to capture the treasure, resists stagger and knockback, and nullifies immobilising status effects.", "Example character: Egghead Zoro"]),
         ("Red-Haired Haki", ["Effect: Nullifies status effects, resists stagger, and can only be targeted by normal attacks.", "Example character: FILM RED Shanks"]),
-        ("Electrified", ["Effect: Deals a mid-range attack with a chance to shock, nullifies stagger and grants status effects nullification", "Example character: Charlotte Linlin"])
+        ("Electrified", ["Effect: Deals a mid-range attack with a chance to shock, nullifies stagger and grants status effects nullification", "Example character: Charlotte Linlin"]),
+        ("Flame-Flame", ["Effect: ATK is increased and character gains status effect nullification", "Example character: Sabo"]),
+        ("Silence", ["Effect: Allies will not appear on the enemyies mini map", "Example character: Corazon"])
     ]
     
     @Published var otherStatus: [(String, [String])] = [
@@ -117,7 +126,12 @@ class HomeViewModel: ObservableObject {
         ("Clawed", ["Effect: Receive % damage and unable to use holding attacks (normal button and skills)", "Example character: Egghead Rob Lucci"]),
         ("Confuse", ["Effect: Inverts characters movements", "Example character: Don Quixote Doflamingo"]),
         ("Calm", ["Effect: Enemies unable to attack", "Example character: Ms. Goldenweek"]),
-        ("Intimidate", ["Effect: Enemies unable to attack", "Example character: Ben Beckman"])
+        ("Intimidate", ["Effect: Enemies unable to attack", "Example character: Ben Beckman"]),
+        ("Toy", ["Effect: Enemies unable to attack", "Example character: Sugar"]),
+        ("Dark", ["Effect: Enemies unable to dodge", "Example character: Marshall D. Teech"]),
+        ("Capture Block", ["Effect: Enemies unable to capture flags", "Example character: FILM RED Yasopp"]),
+        ("Hormone", ["Effect: Nullifies enemies ability to gain buffs", "Example character: Emporio Ivankov"]),
+        ("Negative", ["Effect: Enemies unable to attack", "Example character: Perona"])
     ]
     
     // Alert
