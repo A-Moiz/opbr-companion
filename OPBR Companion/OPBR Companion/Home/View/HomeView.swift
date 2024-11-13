@@ -16,8 +16,6 @@ struct HomeView: View {
     @State private var selectedTab: Tab = .characters
     // CloudKit container
     let containerIdentifier = "iCloud.OPBR-Companion"
-    // Progress view
-    @State private var isLoading: Bool = false
     // View
     @State private var showMedalTagsView: Bool = false
     @State private var showSupportTagsView: Bool = false
@@ -52,60 +50,10 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .background(colourScheme == .dark ? Color.black.opacity(0.9) : Color.gray.opacity(0.1))
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button(action: {
-                            Task {
-                                homeVM.fetchAllCharacters(from: containerIdentifier)
-                                homeVM.fetchSupportImages(from: containerIdentifier)
-                                homeVM.fetchMedalSets(from: containerIdentifier)
-                            }
-                        }) {
-                            Label("Refresh Feed", systemImage: "person.3.fill")
-                        }
-                        
-                        Button(action: {
-                            showStatusView = true
-                        }) {
-                            Label("View All Status Effects", systemImage: "tablecells")
-                        }
-
-                        Button(action: {
-                            showMedalTagsView = true
-                        }) {
-                            Label("View Medal Tags", systemImage: "tablecells")
-                        }
-                        
-                        Button(action: {
-                            showSupportTagsView = true
-                        }) {
-                            Label("View Support Tags", systemImage: "tablecells")
-                        }
-                        
-                        Button(action: {
-                            if let url = URL(string: supportVidUrl) {
-                                homeVM.videoGuide(videoUrl: url)
-                            }
-                        }) {
-                            Label("Watch support guide video", systemImage: "video")
-                        }
-                        
-                        Button(action: {
-                            if let url = URL(string: medalVidUrl) {
-                                homeVM.videoGuide(videoUrl: url)
-                            }
-                        }) {
-                            Label("Watch medal guide video", systemImage: "video")
-                        }
-                    } label: {
-                        Label("Options", systemImage: "ellipsis.circle")
-                    }
-                }
+                optionsMenu
             }
             .overlay {
-                if isLoading {
-                    ProgressView()
-                }
+                LoadingOverlay(isLoading: homeVM.isLoading)
             }
             .sheet(isPresented: $showStatusView) {
                 StatusEffectsView(homeVM: homeVM)
@@ -116,15 +64,111 @@ struct HomeView: View {
             .sheet(isPresented: $showSupportTagsView) {
                 SupportTagsView(homeVM: homeVM)
             }
-            .onAppear {
-                isLoading = true
-                homeVM.fetchSupportImages(from: containerIdentifier)
-                homeVM.fetchAllCharacters(from: containerIdentifier)
-                homeVM.fetchMedalSets(from: containerIdentifier)
-                isLoading = false
-            }
+            .onAppear(perform: loadData)
             .alert(isPresented: $homeVM.showAlert) {
                 Alert(title: Text(""), message: Text(homeVM.alertMessage), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
+    
+    private var optionsMenu: some View {
+        Menu {
+            Button(action: refreshData) {
+                Label("Refresh Feed", systemImage: "person.3.fill")
+            }
+            
+            Button(action: { showStatusView = true }) {
+                Label("View All Status Effects", systemImage: "tablecells")
+            }
+            
+            Button(action: { showMedalTagsView = true }) {
+                Label("View Medal Tags", systemImage: "tablecells")
+            }
+            
+            Button(action: { showSupportTagsView = true }) {
+                Label("View Support Tags", systemImage: "tablecells")
+            }
+            
+            Button(action: {
+                if let url = URL(string: supportVidUrl) {
+                    homeVM.videoGuide(videoUrl: url)
+                }
+            }) {
+                Label("Watch support guide video", systemImage: "video")
+            }
+            
+            Button(action: {
+                if let url = URL(string: medalVidUrl) {
+                    homeVM.videoGuide(videoUrl: url)
+                }
+            }) {
+                Label("Watch medal guide video", systemImage: "video")
+            }
+        } label: {
+            Label("Options", systemImage: "ellipsis.circle")
+        }
+    }
+    
+    private func loadData() {
+        homeVM.isLoading = true
+        
+        homeVM.fetchAllCharacters(from: containerIdentifier) { success in
+            guard success else {
+                homeVM.isLoading = false
+                return
+            }
+            
+            homeVM.fetchSupportImages(from: containerIdentifier) { success in
+                guard success else {
+                    homeVM.isLoading = false
+                    return
+                }
+
+                homeVM.fetchMedalSets(from: containerIdentifier) { success in
+                    homeVM.isLoading = false
+                }
+            }
+        }
+    }
+    
+    private func refreshData() {
+        homeVM.isLoading = true
+        homeVM.fetchAllCharacters(from: containerIdentifier) { success in
+            guard success else {
+                homeVM.isLoading = false
+                return
+            }
+        }
+        
+        homeVM.fetchSupportImages(from: containerIdentifier) { success in
+            guard success else {
+                homeVM.isLoading = false
+                return
+            }
+            
+            homeVM.fetchMedalSets(from: containerIdentifier) { success in
+                homeVM.isLoading = false
+            }
+        }
+    }
+}
+
+struct LoadingOverlay: View {
+    var isLoading: Bool
+    @Environment(\.colorScheme) private var colourScheme
+    
+    var body: some View {
+        if isLoading {
+            ZStack {
+                Color.black
+                    .opacity(colourScheme == .dark ? 0.6 : 0.3)
+                    .ignoresSafeArea()
+
+                ProgressView("Loading...")
+                    .padding()
+                    .background(colourScheme == .dark ? Color.black : Color.white)
+                    .cornerRadius(10)
+                    .foregroundColor(colourScheme == .dark ? .white : .black)
             }
         }
     }

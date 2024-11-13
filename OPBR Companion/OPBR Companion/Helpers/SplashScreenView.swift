@@ -13,7 +13,7 @@ struct SplashScreenView: View {
             Rectangle()
                 .fill(.splashBG)
             
-            Image("icon-2")
+            Image("icon-3")
         }
         .ignoresSafeArea()
     }

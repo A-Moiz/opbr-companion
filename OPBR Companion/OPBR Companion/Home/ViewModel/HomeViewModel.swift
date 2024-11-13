@@ -103,7 +103,7 @@ class HomeViewModel: ObservableObject {
         ("Entrance", ["Effect: Immobilises character", "Example character: Stampede Boa Bancock"]),
         ("Stun", ["Effect: Immobilises character", "Example character: Hakuba"]),
         ("Gold", ["Effect: Immobilises character", "Example character: Gild Tesoro"]),
-        ("Stun", ["Effect: Immobilises character", "Example character: Hakuba"]),
+        ("Sing-Sing", ["Effect: Immobilises character", "Example character: FILM RED Uta"]),
         ("Sleep", ["Effect: Immobilises character", "Example character: Raid Usopp"]),
         ("Candyman", ["Effect: Immobilises character", "Example character: Charlotte Perospero"]),
         ("Gravity", ["Effect: Immobilises character", "Example character: Issho"]),
@@ -137,6 +137,9 @@ class HomeViewModel: ObservableObject {
     // Alert
     @Published var alertMessage: String = ""
     @Published var showAlert: Bool = false
+    
+    // Progress view
+    @Published var isLoading: Bool = false
     
     init() {
         loadOwnedCharacters()
@@ -243,7 +246,7 @@ class HomeViewModel: ObservableObject {
     }
     
     // Fetching support images
-    func fetchSupportImages(from containerName: String) {
+    func fetchSupportImages(from containerName: String, completion: @escaping (Bool) -> Void) {
         let customContainer = CKContainer(identifier: containerName)
         let publicDatabase = customContainer.publicCloudDatabase
         let query = CKQuery(recordType: "SupportImage", predicate: NSPredicate(value: true))
@@ -252,10 +255,12 @@ class HomeViewModel: ObservableObject {
             if let error = error {
                 self?.showAlert(message: "Error fetching Support Images: \(error.localizedDescription)")
                 print("Error fetching SupportImage records: \(error.localizedDescription)")
+                completion(false)
                 return
             }
             
             guard let records = records else {
+                completion(false)
                 return
             }
             
@@ -270,12 +275,13 @@ class HomeViewModel: ObservableObject {
                     }
                     return SupportImage(imageURL: url, tags: tags, colour: colour)
                 }
+                completion(true)
             }
         }
     }
     
     // Fetching medal sets
-    func fetchMedalSets(from containerName: String) {
+    func fetchMedalSets(from containerName: String, completion: @escaping (Bool) -> Void) {
         let customContainer = CKContainer(identifier: containerName)
         let publicDatabase = customContainer.publicCloudDatabase
         let query = CKQuery(recordType: "MedalSet", predicate: NSPredicate(value: true))
@@ -284,10 +290,12 @@ class HomeViewModel: ObservableObject {
             if let error = error {
                 self?.showAlert(message: "Error fetching Medal sets: \(error.localizedDescription)")
                 print("Error fetching Medal sets: \(error.localizedDescription)")
+                completion(false)
                 return
             }
             
             guard let records = records else {
+                completion(false)
                 return
             }
             
@@ -303,12 +311,13 @@ class HomeViewModel: ObservableObject {
                     }
                     return MedalSet(imageURL: url, description: description, bestFor: bestFor, medalTraits: medalTraits)
                 }
+                completion(true)
             }
         }
     }
     
     // Fetching all characters
-    func fetchAllCharacters(from containerName: String) {
+    func fetchAllCharacters(from containerName: String, completion: @escaping (Bool) -> Void) {
         let customContainer = CKContainer(identifier: containerName)
         let publicDatabase = customContainer.publicCloudDatabase
         let query = CKQuery(recordType: "Character", predicate: NSPredicate(value: true))
@@ -317,10 +326,12 @@ class HomeViewModel: ObservableObject {
             if let error = error {
                 self?.showAlert(message: "Error fetching Characters: \(error.localizedDescription)")
                 print("Error fetching Characters: \(error.localizedDescription)")
+                completion(false)
                 return
             }
             
             guard let records = records else {
+                completion(false)
                 return
             }
             
@@ -350,13 +361,14 @@ class HomeViewModel: ObservableObject {
                     let recommendedSet = recommendedSetAssets?.compactMap { $0.fileURL }
                     let setMessage = record["setMessage"] as? String
                     
-                    // Save the image data if needed
                     if let imageData = try? Data(contentsOf: url) {
                         self?.saveImageData(imageData, for: url)
                     }
                     
                     return Character(imageURL: url, characterClass: characterClass, colour: colour, tags: tags, name: name, title: title, guide: guide, videoUrl: videoUrl, medalURL: medalUrl, medalTrait: medalTrait, medalTags: medalTags, recommendedSet: recommendedSet, setMessage: setMessage, recommededStats: recommendedStats, statMessage: statMessage)
                 }
+                
+                completion(true)
             }
         }
     }
