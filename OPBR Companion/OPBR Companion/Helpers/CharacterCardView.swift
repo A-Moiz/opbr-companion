@@ -12,6 +12,7 @@ struct CharacterCardView: View {
     @State private var uiImage: UIImage? = nil
     @Environment(\.colorScheme) private var colourScheme
     @ObservedObject var homeViewModel: HomeViewModel
+    private let isSmallDevice = UIScreen.main.bounds.width < 375
 
     var body: some View {
         VStack(spacing: 8) {
@@ -19,19 +20,19 @@ struct CharacterCardView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 110, height: 110)
+                    .frame(width: imageWidth, height: imageHeight)
                     .cornerRadius(6)
                     .shadow(radius: 1)
             } else {
                 Rectangle()
                     .fill(Color.gray.opacity(0.3))
-                    .frame(width: 110, height: 110)
+                    .frame(width: imageWidth, height: imageHeight)
                     .cornerRadius(6)
                     .onAppear {
                         loadImage()
                     }
             }
-            
+
             HStack(spacing: 4) {
                 Text(character.name)
                     .font(.caption2)
@@ -39,13 +40,13 @@ struct CharacterCardView: View {
                     .foregroundColor(.blue)
                     .lineLimit(1)
                     .truncationMode(.tail)
-                
+
                 if homeViewModel.isCharacterOwned(character) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
                         .font(.caption2)
                 }
-                
+
                 if homeViewModel.isCharacterWanted(character) {
                     Image(systemName: "star.circle.fill")
                         .foregroundColor(.yellow)
@@ -53,7 +54,7 @@ struct CharacterCardView: View {
                 }
             }
         }
-        .frame(width: 110, height: 130)
+        .frame(width: vStackWidth, height: vStackHeight)
         .padding(2)
         .background(colourScheme == .light ? .white : Color(.systemGray5))
         .cornerRadius(6)
@@ -62,7 +63,23 @@ struct CharacterCardView: View {
             loadImage()
         }
     }
-    
+
+    private var imageWidth: CGFloat {
+        isSmallDevice ? 80 : 110
+    }
+
+    private var imageHeight: CGFloat {
+        isSmallDevice ? 80 : 110
+    }
+
+    private var vStackWidth: CGFloat {
+        isSmallDevice ? 90 : 100
+    }
+
+    private var vStackHeight: CGFloat {
+        isSmallDevice ? 130 : 130
+    }
+
     private func loadImage() {
         if let image = UIImage(contentsOfFile: character.imageURL.path) {
             self.uiImage = image
@@ -72,6 +89,24 @@ struct CharacterCardView: View {
     }
 }
 
-//#Preview {
-//    CharacterCardView()
-//}
+#Preview {
+    CharacterCardView(
+character: Character(
+            imageURL: URL(string: "https://example.com/image.jpg")!,
+            characterClass: "Warrior",
+            colour: "Red",
+            tags: ["Attack", "Speed"],
+            name: "Luffy",
+            title: "Captain",
+            guide: nil,
+            videoUrl: nil,
+            medalURL: URL(string: "https://example.com/medal.jpg")!,
+            medalTrait: "Power",
+            medalTags: ["Boost"],
+            recommendedSet: nil,
+            setMessage: nil,
+            recommededStats: nil,
+            statMessage: nil
+        ),
+        homeViewModel: HomeViewModel())
+}

@@ -113,19 +113,23 @@ struct HomeView: View {
         homeVM.isLoading = true
         
         homeVM.fetchAllCharacters(from: containerIdentifier) { success in
-            guard success else {
-                homeVM.isLoading = false
-                return
-            }
-            
-            homeVM.fetchSupportImages(from: containerIdentifier) { success in
+            DispatchQueue.main.async {
                 guard success else {
                     homeVM.isLoading = false
                     return
                 }
+            }
+            
+            homeVM.fetchSupportImages(from: containerIdentifier) { success in
+                DispatchQueue.main.async {
+                    guard success else {
+                        homeVM.isLoading = false
+                        return
+                    }
 
-                homeVM.fetchMedalSets(from: containerIdentifier) { success in
-                    homeVM.isLoading = false
+                    homeVM.fetchMedalSets(from: containerIdentifier) { success in
+                        homeVM.isLoading = false
+                    }
                 }
             }
         }
