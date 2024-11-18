@@ -15,9 +15,19 @@ class HomeViewModel: ObservableObject {
     @Published var medalSets: [MedalSet] = []
     @Published var characters: [Character] = []
     
+    // User default keys
+    private let charactersOwnedKey = "ownedCharacters"
+    private let charactersWantedKey = "wantedCharacters"
+    private let incompleteTitlesKey = "incompleteTitlesKey"
+    private let completeTitlesKey = "completeTitlesKey"
+    
     // Character arrays
     @Published var wantedCharacters: [Character] = []
     @Published var ownedCharacters: [Character] = []
+    
+    // Character titles arrays
+    @Published var incompleteTitles: [CharacterTitle] = []
+    @Published var completeTitles: [CharacterTitle] = []
     
     // Medal/Support arrays
     @Published var medalTagsArray: [(String, [String])] = [
@@ -144,6 +154,58 @@ class HomeViewModel: ObservableObject {
     init() {
         loadOwnedCharacters()
         loadWantedCharacters()
+        loadTitles()
+    }
+    
+    // Function to add character title
+    func addCharacter(name: String) {
+        let newCharacter = CharacterTitle(name: name, wins: 0)
+        incompleteTitles.append(newCharacter)
+        saveTitles()
+    }
+    
+    // Updating character titles
+    func updateWins(for character: CharacterTitle, newWins: Int) {
+        if let index = incompleteTitles.firstIndex(of: character) {
+            incompleteTitles[index].wins = newWins
+            
+            if incompleteTitles[index].wins >= 100 {
+                moveToCompleteList(character: incompleteTitles[index])
+            }
+            
+            saveTitles()
+        }
+    }
+    
+    // Moving title to completed list
+    private func moveToCompleteList(character: CharacterTitle) {
+        incompleteTitles.removeAll { $0.id == character.id }
+        completeTitles.append(character)
+        saveTitles()
+    }
+    
+    // Saving character title list
+    private func saveTitles() {
+        if let incompleteData = try? JSONEncoder().encode(incompleteTitles) {
+            UserDefaults.standard.set(incompleteData, forKey: incompleteTitlesKey)
+        }
+        
+        if let completeData = try? JSONEncoder().encode(completeTitles) {
+            UserDefaults.standard.set(completeData, forKey: completeTitlesKey)
+        }
+    }
+    
+    // Loading character title list
+    private func loadTitles() {
+        if let incompleteData = UserDefaults.standard.data(forKey: incompleteTitlesKey),
+           let decodedIncomplete = try? JSONDecoder().decode([CharacterTitle].self, from: incompleteData) {
+            self.incompleteTitles = decodedIncomplete
+        }
+        
+        if let completeData = UserDefaults.standard.data(forKey: completeTitlesKey),
+           let decodedComplete = try? JSONDecoder().decode([CharacterTitle].self, from: completeData) {
+            self.completeTitles = decodedComplete
+        }
     }
     
     // Function to toggle character ownership
@@ -180,27 +242,27 @@ class HomeViewModel: ObservableObject {
     func saveOwnedCharacters() {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(ownedCharacters) {
-            UserDefaults.standard.set(encoded, forKey: "ownedCharacters")
+            UserDefaults.standard.set(encoded, forKey: charactersOwnedKey)
         }
     }
     
     func saveWantedCharacters() {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(wantedCharacters) {
-            UserDefaults.standard.set(encoded, forKey: "wantedCharacters")
+            UserDefaults.standard.set(encoded, forKey: charactersWantedKey)
         }
     }
     
     // Load from UserDefaults
     func loadOwnedCharacters() {
-        if let savedData = UserDefaults.standard.data(forKey: "ownedCharacters"),
+        if let savedData = UserDefaults.standard.data(forKey: charactersOwnedKey),
            let decodedCharacters = try? JSONDecoder().decode([Character].self, from: savedData) {
             ownedCharacters = decodedCharacters
         }
     }
     
     func loadWantedCharacters() {
-        if let savedData = UserDefaults.standard.data(forKey: "wantedCharacters"),
+        if let savedData = UserDefaults.standard.data(forKey: charactersWantedKey),
            let decodedCharacters = try? JSONDecoder().decode([Character].self, from: savedData) {
             wantedCharacters = decodedCharacters
         }
@@ -230,11 +292,11 @@ class HomeViewModel: ObservableObject {
     
     // Getting support tag
     func getSupportMessage(for tag: String) -> String? {
-            if let tagData = supportTagsArray.first(where: { $0.0 == tag }) {
-                return tagData.1.joined(separator: "\n\n")
-            }
-            return nil
+        if let tagData = supportTagsArray.first(where: { $0.0 == tag }) {
+            return tagData.1.joined(separator: "\n\n")
         }
+        return nil
+    }
     
     // Getting medal tag
     func getMedalMessage(for tag: String) -> String? {
