@@ -14,6 +14,7 @@ struct SplashScreenView: View {
                 .fill(.splashBG)
             
             Image("icon-3")
+                .cornerRadius(20)
         }
         .ignoresSafeArea()
     }

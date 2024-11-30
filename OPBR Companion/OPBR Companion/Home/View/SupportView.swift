@@ -17,14 +17,14 @@ struct SupportView: View {
     @State private var selectedColors: [String] = []
     @State private var showTags: Bool = false
     @State private var showColorTags: Bool = false
-
+    
     // Color filter options
     private let colorTags = ["Red", "Green", "Blue", "Light", "Dark"]
-
+    
     // Filtered support images based on selected tags and colors
     private var filteredSupport: [SupportImage] {
         var supports = homeVM.supportImages
-
+        
         // Filter by support tags
         if !selectedTags.isEmpty {
             supports = supports.filter { supportImage in
@@ -33,7 +33,7 @@ struct SupportView: View {
                 }
             }
         }
-
+        
         // Filter by color tags
         if !selectedColors.isEmpty {
             supports = supports.filter { supportImage in
@@ -43,13 +43,9 @@ struct SupportView: View {
         
         return supports
     }
-
+    
     var body: some View {
         VStack {
-            Text("Support percentages vary between users. Use these examples to guide your character choices and configurations.")
-                .foregroundStyle(.gray)
-                .padding()
-
             // Button to show/hide support tags
             HStack {
                 Button(action: {
@@ -62,7 +58,7 @@ struct SupportView: View {
                 }
                 .padding()
             }
-
+            
             // Support Tags
             if showTags {
                 ScrollView(.vertical, showsIndicators: false) {
@@ -80,7 +76,7 @@ struct SupportView: View {
                     .padding()
                 }
             }
-
+            
             // Button to show/hide color tags
             HStack {
                 Button(action: {
@@ -93,7 +89,7 @@ struct SupportView: View {
                 }
                 .padding()
             }
-
+            
             // Color Tags
             if showColorTags {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -111,7 +107,7 @@ struct SupportView: View {
                     .padding()
                 }
             }
-
+            
             // Filtered support images
             ScrollView {
                 LazyVStack(spacing: 20) {
@@ -130,10 +126,8 @@ struct SupportView: View {
                 .padding(.top, 10)
             }
             .scrollIndicators(.hidden)
-
-            Text("NOTE: More supports will be added in the future.")
-                .font(.subheadline)
-                .padding()
+            
+            InfoButton(infoMessage: "Support percentages vary between users. Use these examples to guide your character choices and configurations.\n\nNote: More supports will be added in the future.", homeVM: homeVM)
         }
         .background(colourScheme == .dark ? Color.black.opacity(0.95) : Color.gray.opacity(0.05))
     }

@@ -58,7 +58,7 @@ struct MedalSetsView: View {
                 }
                 .padding()
             }
-
+            
             ScrollView {
                 LazyVStack(spacing: 20) {
                     if filteredMedalSets.isEmpty {
@@ -67,7 +67,7 @@ struct MedalSetsView: View {
                             .foregroundColor(.secondary)
                             .padding()
                     } else {
-                        ForEach(filteredMedalSets, id: \.imageURL) { set in
+                        ForEach(filteredMedalSets, id: \.imageURLs) { set in
                             MedalSetCardView(medalSet: set)
                                 .padding(.horizontal)
                         }
@@ -77,9 +77,7 @@ struct MedalSetsView: View {
             }
             .scrollIndicators(.hidden)
             
-            Text("NOTE: More sets will be added in the future.")
-                .font(.subheadline)
-                .padding()
+            InfoButton(infoMessage: "You can search for medal sets that are suitable for each class. If you select multiple classes, the displayed sets will be practical for all chosen classes.\n\nNOTE: More sets will be added in the future.", homeVM: homeVM)
         }
         .padding(.top)
         .background(colourScheme == .dark ? Color.black.opacity(0.95) : Color.gray.opacity(0.05))

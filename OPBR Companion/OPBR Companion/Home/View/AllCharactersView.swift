@@ -34,13 +34,8 @@ struct AllCharactersView: View {
     var body: some View {
         VStack {
             // Search bar
-            VStack {
-                Text("You can search for characters by class, colour, name or title")
-                    .foregroundStyle(.gray)
-                    .padding()
-                SearchBar(searchText: $searchText, text: $text)
-            }
-            .padding(.top)
+            SearchBar(searchText: $searchText, text: $text)
+                .padding(.top)
             
             Divider()
             
@@ -64,9 +59,7 @@ struct AllCharactersView: View {
             }
             .scrollIndicators(.hidden)
             
-            Text("NOTE: More characters will be added in the future.")
-                .font(.subheadline)
-                .padding()
+            InfoButton(infoMessage: "You can search for characters by class, colour, name or title\n\nNote: More characters will be added in the future.", homeVM: homeVM)
         }
         .padding(.top)
         .ignoresSafeArea(.keyboard, edges: .bottom)

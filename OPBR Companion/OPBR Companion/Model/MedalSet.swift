@@ -8,8 +8,9 @@
 import Foundation
 
 struct MedalSet {
-    let imageURL: URL
+    let imageURLs: [URL]
     let description: String
     let bestFor: [String]
     let medalTraits: [String]
+    let tags: [String]
 }
