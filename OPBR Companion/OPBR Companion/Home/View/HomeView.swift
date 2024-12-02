@@ -51,7 +51,17 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .background(colourScheme == .dark ? Color.black.opacity(0.9) : Color.gray.opacity(0.1))
             .toolbar {
-                optionsMenu
+                ToolbarItem(placement: .topBarLeading) {
+                    optionsMenu
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        refreshData()
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                }
             }
             .overlay {
                 LoadingOverlay(isLoading: homeVM.isLoading)
@@ -68,7 +78,7 @@ struct HomeView: View {
             .sheet(isPresented: $showCharacterTitleView) {
                 TitleTrackerView(homeVM: homeVM)
             }
-            .onAppear(perform: loadData)
+            //.onAppear(perform: loadData)
             .alert(isPresented: $homeVM.showAlert) {
                 Alert(title: Text(""), message: Text(homeVM.alertMessage), dismissButton: .default(Text("OK")))
             }
@@ -77,10 +87,6 @@ struct HomeView: View {
     
     private var optionsMenu: some View {
         Menu {
-            Button(action: refreshData) {
-                Label("Refresh Feed", systemImage: "person.3.fill")
-            }
-            
             Button(action: { showStatusView = true }) {
                 Label("View All Status Effects", systemImage: "tablecells")
             }

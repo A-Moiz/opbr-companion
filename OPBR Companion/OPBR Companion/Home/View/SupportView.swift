@@ -34,7 +34,7 @@ struct SupportView: View {
             }
         }
         
-        // Filter by color tags
+        // Filter by colour tags
         if !selectedColors.isEmpty {
             supports = supports.filter { supportImage in
                 selectedColors.contains(supportImage.colour)
@@ -77,13 +77,13 @@ struct SupportView: View {
                 }
             }
             
-            // Button to show/hide color tags
+            // Button to show/hide colour tags
             HStack {
                 Button(action: {
                     showColorTags.toggle()
                 }) {
                     HStack {
-                        Text(showColorTags ? "Hide color tags" : "Show color tags")
+                        Text(showColorTags ? "Hide colour tags" : "Show colour tags")
                         Image(systemName: showColorTags ? "chevron.up" : "chevron.down")
                     }
                 }

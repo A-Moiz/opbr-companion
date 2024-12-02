@@ -19,10 +19,12 @@ struct SearchBar: View {
             Image(systemName: "magnifyingglass")
             TextField(text, text: $searchText)
                 .textFieldStyle(PlainTextFieldStyle())
-            Image(systemName: "x.circle")
-                .onTapGesture {
-                    searchText = ""
-                }
+            if !searchText.isEmpty {
+                Image(systemName: "x.circle")
+                    .onTapGesture {
+                        searchText = ""
+                    }
+            }
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
