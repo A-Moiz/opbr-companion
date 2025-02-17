@@ -21,6 +21,7 @@ struct HomeView: View {
     @State private var showSupportTagsView: Bool = false
     @State private var showStatusView: Bool = false
     @State private var showCharacterTitleView: Bool = false
+    @State private var showSetsView: Bool = false
     // Videos
     @State private var supportVidUrl: String = "https://youtu.be/V4LvGE_h7dc?feature=shared"
     @State private var medalVidUrl: String = "https://youtu.be/1pVs3GxZAfg?feature=shared"
@@ -78,6 +79,9 @@ struct HomeView: View {
             .sheet(isPresented: $showCharacterTitleView) {
                 TitleTrackerView(homeVM: homeVM)
             }
+            .sheet(isPresented: $showSetsView) {
+                ShareSetView(homeVM: homeVM)
+            }
             //.onAppear(perform: loadData)
             .alert(isPresented: $homeVM.showAlert) {
                 Alert(title: Text(""), message: Text(homeVM.alertMessage), dismissButton: .default(Text("OK")))
@@ -101,6 +105,10 @@ struct HomeView: View {
             
             Button(action: { showCharacterTitleView = true }) {
                 Label("Track your Character titles", systemImage: "person")
+            }
+            
+            Button(action: { showSetsView = true }) {
+                Label("Share medal sets", systemImage: "square.and.arrow.up")
             }
             
             Button(action: {
