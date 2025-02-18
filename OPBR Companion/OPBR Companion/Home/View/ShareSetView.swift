@@ -193,7 +193,7 @@ struct ShareSetView: View {
                     yOffset += imageSize + 10
                     
                     let traitsText = "Traits:"
-                    traitsText.draw(at: CGPoint(x: leftPadding, y: yOffset), withAttributes: [.font: UIFont.boldSystemFont(ofSize: 12)]) // Smaller traits font
+                    traitsText.draw(at: CGPoint(x: leftPadding, y: yOffset), withAttributes: [.font: UIFont.boldSystemFont(ofSize: 12)])
                     yOffset += 15
                     
                     for trait in set.medalTraits {
