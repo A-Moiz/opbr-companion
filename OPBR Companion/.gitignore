@@ -8,6 +8,6 @@ xcshareddata/
 *.xcuserstate/
 
 #Ignore secrets
-secrets.xcconfig
+Config.swift
 
 
