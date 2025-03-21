@@ -1,1 +1,13 @@
+# Ignore macOS system files
+.DS_Store
+
+#Ignore Xcode user-specific files
+xcuserdata/
+xcshareddata/
+*.xcworkspace/
+*.xcuserstate/
+
+#Ignore secrets
 secrets.xcconfig
+
+
