@@ -11,10 +11,11 @@ struct SupportView: View {
     // Colour scheme
     @Environment(\.colorScheme) private var colourScheme
     // View model
-    @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var db: Supabase
+    @ObservedObject var helper: Helper
     // Tags
     @State private var selectedTags: [String] = []
-    @State private var selectedColors: [String] = []
+    @State private var selectedColor: String? = nil
     @State private var showTags: Bool = false
     @State private var showColorTags: Bool = false
     
@@ -22,22 +23,28 @@ struct SupportView: View {
     private let colorTags = ["Red", "Green", "Blue", "Light", "Dark"]
     
     // Filtered support images based on selected tags and colors
-    private var filteredSupport: [SupportImage] {
-        var supports = homeVM.supportImages
+    private var filteredSupport: [Support] {
+        var supports = db.supports
         
         // Filter by support tags
         if !selectedTags.isEmpty {
-            supports = supports.filter { supportImage in
-                selectedTags.allSatisfy { tag in
-                    supportImage.tags.contains(tag)
+            supports = supports.filter { support in
+                if let tags = support.supportTags {
+                    return selectedTags.allSatisfy { tag in
+                        tags.contains(tag)
+                    }
                 }
+                return false
             }
         }
         
         // Filter by colour tags
-        if !selectedColors.isEmpty {
-            supports = supports.filter { supportImage in
-                selectedColors.contains(supportImage.colour)
+        if let color = selectedColor {
+            supports = supports.filter { support in
+                if let supportColor = support.supportColor {
+                    return supportColor == color
+                }
+                return false
             }
         }
         
@@ -63,7 +70,7 @@ struct SupportView: View {
             if showTags {
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), spacing: 10)]) {
-                        ForEach(homeVM.supportTagsArray.map(\.0), id: \.self) { tag in
+                        ForEach(helper.supportTagsArray.map(\.0), id: \.self) { tag in
                             TagButton(label: tag, isSelected: selectedTags.contains(tag)) {
                                 if selectedTags.contains(tag) {
                                     selectedTags.removeAll { $0 == tag }
@@ -95,12 +102,8 @@ struct SupportView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(colorTags, id: \.self) { color in
-                            TagButton(label: color, isSelected: selectedColors.contains(color)) {
-                                if selectedColors.contains(color) {
-                                    selectedColors.removeAll { $0 == color }
-                                } else {
-                                    selectedColors.append(color)
-                                }
+                            TagButton(label: color, isSelected: selectedColor == color) {
+                                selectedColor = (selectedColor == color) ? nil : color
                             }
                         }
                     }
@@ -117,9 +120,8 @@ struct SupportView: View {
                             .foregroundColor(.secondary)
                             .padding()
                     } else {
-                        ForEach(filteredSupport, id: \.imageURL) { image in
-                            SupportCardView(supportImage: image)
-                                .padding(.horizontal)
+                        ForEach(filteredSupport, id: \.support) { support in
+                            SupportCardView(support: support)
                         }
                     }
                 }
@@ -127,7 +129,7 @@ struct SupportView: View {
             }
             .scrollIndicators(.hidden)
             
-            InfoButton(infoMessage: "Support percentages vary between users. Use these examples to guide your character choices and configurations.\n\nNote: More supports will be added in the future.", homeVM: homeVM)
+            InfoButton(infoMessage: "Support percentages vary between users. Use these examples to guide your character choices and configurations.\n\nNote: More supports will be added in the future.", helper: helper)
         }
         .background(colourScheme == .dark ? Color.black.opacity(0.95) : Color.gray.opacity(0.05))
     }

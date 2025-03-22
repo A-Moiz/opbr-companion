@@ -6,43 +6,40 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SupportCardView: View {
-    var supportImage: SupportImage
+    var support: Support
     @Environment(\.colorScheme) private var colourScheme
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let uiImage = UIImage(contentsOfFile: supportImage.imageURL.path) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: imageHeight())
-                    // .frame(height: 250)
-                    .cornerRadius(15)
-                    .shadow(radius: 4)
-            } else {
-                Rectangle()
-                    .fill(Color.gray.opacity(0.3))
-                    .frame(height: 180)
-                    .cornerRadius(15)
-            }
+            KFImage(URL(string: support.support ?? ""))
+                .resizable()
+                .scaledToFill()
+                .frame(height: imageHeight())
+                .cornerRadius(15)
+                .shadow(radius: 4)
             
             VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Image(systemName: "tag.fill")
-                        .foregroundStyle(Color.orange)
-                    Text("Tags: \(supportImage.tags.joined(separator: ", "))")
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
+                if let tags = support.supportTags, !tags.isEmpty {
+                    HStack {
+                        Image(systemName: "tag.fill")
+                            .foregroundStyle(Color.orange)
+                        Text("Tags: \(tags.joined(separator: ", "))")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                    }
                 }
                 
-                HStack {
-                    Image(systemName: "circle.fill")
-                        .foregroundStyle(color(for: supportImage.colour))
-                    Text("Color: \(supportImage.colour)")
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
+                if let supportColor = support.supportColor, !supportColor.isEmpty {
+                    HStack {
+                        Image(systemName: "circle.fill")
+                            .foregroundStyle(color(for: supportColor))
+                        Text("Color: \(supportColor)")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                    }
                 }
             }
             .padding(10)
@@ -52,7 +49,7 @@ struct SupportCardView: View {
         }
         .padding(10)
         .background(
-            RoundedRectangle(cornerRadius: 15)
+            RoundedRectangle(cornerRadius: 10)
                 .fill(colourScheme == .light ? Color(.systemGray5) : Color(.systemGray5))
                 .shadow(radius: 5)
         )

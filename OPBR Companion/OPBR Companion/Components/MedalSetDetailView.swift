@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MedalSetDetailView: View {
     var medalSet: MedalSet
@@ -14,11 +15,12 @@ struct MedalSetDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                ForEach(Array(zip(medalSet.imageURLs, medalSet.medalTraits)), id: \.0) { imageURL, medalTrait in
+                // Display images and their corresponding traits
+                ForEach(Array(zip(medalSet.medals ?? [], medalSet.medalTraits ?? [])), id: \.0) { medalURLString, medalTrait in
                     HStack(alignment: .top, spacing: 12) {
                         ZStack {
-                            if let uiImage = UIImage(contentsOfFile: imageURL.path) {
-                                Image(uiImage: uiImage)
+                            if let imageURL = URL(string: medalURLString) {
+                                KFImage(imageURL)
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 50, height: 50)
@@ -41,26 +43,28 @@ struct MedalSetDetailView: View {
                 
                 Divider()
                 
+                // Display best for
                 VStack(alignment: .leading) {
                     Text("Best For: ")
                         .font(.headline)
                         .bold()
                         .foregroundColor(.primary)
                     
-                    Text(medalSet.bestFor.joined(separator: ", "))
+                    Text(medalSet.bestFor)
                         .font(.subheadline)
                         .foregroundStyle(.primary)
                 }
                 
                 Divider()
                 
+                // Display description
                 VStack(alignment: .leading) {
                     Text("Description: ")
                         .font(.headline)
                         .bold()
                         .foregroundColor(.primary)
                     
-                    Text(medalSet.description)
+                    Text(medalSet.description ?? "No description available.")
                         .font(.footnote)
                         .foregroundColor(.primary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -68,19 +72,26 @@ struct MedalSetDetailView: View {
                 
                 Divider()
                 
+                // Display tags
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Tags:")
                         .font(.headline)
                         .bold()
                         .foregroundColor(.primary)
                     
-                    ForEach(medalSet.tags, id: \.self) { tag in
-                        Text(tag)
+                    if let tags = medalSet.tags, !tags.isEmpty {
+                        ForEach(tags, id: \.self) { tag in
+                            Text(tag)
+                                .font(.subheadline)
+                                .foregroundColor(.primary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            Divider()
+                        }
+                    } else {
+                        Text("No tags available")
                             .font(.subheadline)
-                            .foregroundColor(.primary)
-                            .fixedSize(horizontal: false, vertical: true)
-                        
-                        Divider()
+                            .foregroundColor(.secondary)
                     }
                 }
             }

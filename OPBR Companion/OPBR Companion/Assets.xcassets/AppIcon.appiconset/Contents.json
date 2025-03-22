@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "app_icon-2.png",
+      "filename" : "appIcon-4.jpeg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "app_icon-2 1.png",
+      "filename" : "appIcon-4 1.jpeg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

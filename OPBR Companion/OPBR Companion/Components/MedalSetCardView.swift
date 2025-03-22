@@ -6,19 +6,27 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MedalSetCardView: View {
     var medalSet: MedalSet
     @State private var showDetailView: Bool = false
     @Environment(\.colorScheme) private var colourScheme
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            ForEach(Array(zip(medalSet.imageURLs, medalSet.medalTraits)), id: \.0) { imageURL, medalTrait in
+            
+            if let name = medalSet.name, !name.isEmpty {
+                Text("\(name)")
+                    .font(.headline)
+                Divider()
+            }
+            
+            ForEach(Array(zip(medalSet.medals ?? [], medalSet.medalTraits ?? [])), id: \.0) { medalURLString, medalTrait in
                 HStack(alignment: .top, spacing: 12) {
                     ZStack {
-                        if let uiImage = UIImage(contentsOfFile: imageURL.path) {
-                            Image(uiImage: uiImage)
+                        if let imageURL = URL(string: medalURLString) {
+                            KFImage(imageURL)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 50, height: 50)
@@ -31,7 +39,7 @@ struct MedalSetCardView: View {
                                 .cornerRadius(15)
                         }
                     }
-
+                    
                     Text(medalTrait)
                         .font(.footnote)
                         .foregroundColor(.secondary)
@@ -45,8 +53,7 @@ struct MedalSetCardView: View {
                 showDetailView = true
             } label: {
                 HStack {
-                    Text("Set Detail ")
-                    
+                    Text("Set Detail")
                     Image(systemName: "arrow.right")
                 }
             }

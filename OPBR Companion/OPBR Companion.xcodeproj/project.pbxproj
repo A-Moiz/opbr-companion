@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		965D8EE72D8DC7C200F75E99 /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = 965D8EE62D8DC7C200F75E99 /* Functions */; };
+		965D8EE92D8DC7C200F75E99 /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = 965D8EE82D8DC7C200F75E99 /* Realtime */; };
+		965D8EEB2D8DC7C200F75E99 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 965D8EEA2D8DC7C200F75E99 /* Storage */; };
+		965D8EED2D8DC7C200F75E99 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 965D8EEC2D8DC7C200F75E99 /* Supabase */; };
+		965D8EF02D8DC80300F75E99 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 965D8EEF2D8DC80300F75E99 /* Kingfisher */; };
+		9698349B2D8DD27600F22A41 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 9698349A2D8DD27600F22A41 /* Auth */; };
+		9698349D2D8DD27600F22A41 /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = 9698349C2D8DD27600F22A41 /* PostgREST */; };
 		969D95E82CEBE39500CEE318 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 969D95E72CEBE39500CEE318 /* Lottie */; };
 		96C603012CD5AE7200A36FB4 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 96C603002CD5AE7200A36FB4 /* KeychainAccess */; };
 /* End PBXBuildFile section */
@@ -57,8 +64,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				965D8EE72D8DC7C200F75E99 /* Functions in Frameworks */,
 				96C603012CD5AE7200A36FB4 /* KeychainAccess in Frameworks */,
+				965D8EF02D8DC80300F75E99 /* Kingfisher in Frameworks */,
+				9698349D2D8DD27600F22A41 /* PostgREST in Frameworks */,
+				965D8EED2D8DC7C200F75E99 /* Supabase in Frameworks */,
 				969D95E82CEBE39500CEE318 /* Lottie in Frameworks */,
+				965D8EEB2D8DC7C200F75E99 /* Storage in Frameworks */,
+				9698349B2D8DD27600F22A41 /* Auth in Frameworks */,
+				965D8EE92D8DC7C200F75E99 /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +135,13 @@
 			packageProductDependencies = (
 				96C603002CD5AE7200A36FB4 /* KeychainAccess */,
 				969D95E72CEBE39500CEE318 /* Lottie */,
+				965D8EE62D8DC7C200F75E99 /* Functions */,
+				965D8EE82D8DC7C200F75E99 /* Realtime */,
+				965D8EEA2D8DC7C200F75E99 /* Storage */,
+				965D8EEC2D8DC7C200F75E99 /* Supabase */,
+				965D8EEF2D8DC80300F75E99 /* Kingfisher */,
+				9698349A2D8DD27600F22A41 /* Auth */,
+				9698349C2D8DD27600F22A41 /* PostgREST */,
 			);
 			productName = "OPBR Companion";
 			productReference = 962DB2F02CD4156E008077F5 /* OPBR Companion.app */;
@@ -207,6 +228,8 @@
 			packageReferences = (
 				96C602FF2CD5AE7200A36FB4 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				969D95E62CEBE39500CEE318 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				965D8EEE2D8DC80300F75E99 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 962DB2F12CD4156E008077F5 /* Products */;
@@ -577,6 +600,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+		965D8EEE2D8DC80300F75E99 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.1;
+			};
+		};
 		969D95E62CEBE39500CEE318 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios";
@@ -596,6 +635,41 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		965D8EE62D8DC7C200F75E99 /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		965D8EE82D8DC7C200F75E99 /* Realtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Realtime;
+		};
+		965D8EEA2D8DC7C200F75E99 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+		965D8EEC2D8DC7C200F75E99 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		965D8EEF2D8DC80300F75E99 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 965D8EEE2D8DC80300F75E99 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		9698349A2D8DD27600F22A41 /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		9698349C2D8DD27600F22A41 /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 965D8EE52D8DC7C200F75E99 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
 		969D95E72CEBE39500CEE318 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 969D95E62CEBE39500CEE318 /* XCRemoteSwiftPackageReference "lottie-ios" */;

@@ -10,6 +10,8 @@ import SwiftUI
 struct ContentView: View {
     // Splash screen
     @State private var showSplashScreen: Bool = true
+    @ObservedObject private var supabase = Supabase.shared
+    @ObservedObject private var helper = Helper()
     
     var body: some View {
         ZStack {
@@ -17,7 +19,7 @@ struct ContentView: View {
                 SplashScreenView()
                     .transition(CustomSplashTransition(isRoot: true))
             } else {
-                HomeView()
+                HomeView(db: supabase, helper: helper)
                     .transition(CustomSplashTransition(isRoot: false))
             }
         }
@@ -29,6 +31,13 @@ struct ContentView: View {
             try? await Task.sleep(for: .seconds(0.5))
             withAnimation(.smooth(duration: 0.55)) {
                 showSplashScreen = false
+            }
+        }
+        .onAppear {
+            Task {
+                await supabase.fetchCharacters()
+                await supabase.fetchSupports()
+                await supabase.fetchMedalSets()
             }
         }
     }

@@ -9,10 +9,10 @@ import SwiftUI
 
 struct InfoButton: View {
     var infoMessage: String
-    @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var helper: Helper
     var body: some View {
         Button {
-            homeVM.showAlert(message: infoMessage)
+            helper.showAlert(message: infoMessage)
         } label: {
             HStack {
                 Image(systemName: "info.circle")
@@ -33,5 +33,5 @@ struct InfoButton: View {
 }
 
 #Preview {
-    InfoButton(infoMessage: "", homeVM: HomeViewModel())
+    InfoButton(infoMessage: "", helper: Helper())
 }

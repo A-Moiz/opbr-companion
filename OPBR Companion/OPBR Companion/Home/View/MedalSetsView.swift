@@ -11,23 +11,15 @@ struct MedalSetsView: View {
     // Colour scheme
     @Environment(\.colorScheme) private var colourScheme
     // View model
-    @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var db: Supabase
+    @ObservedObject var helper: Helper
     // Filter tags
-    @State private var selectedTags: [String] = []
+    @State private var selectedTag: String?
     @State private var showTags: Bool = false
+    
     // Filtered medal sets
     private var filteredMedalSets: [MedalSet] {
-        var sets = homeVM.medalSets
-        
-        if !selectedTags.isEmpty {
-            sets = sets.filter { set in
-                selectedTags.allSatisfy { tag in
-                    set.bestFor.contains(tag)
-                }
-            }
-        }
-        
-        return sets
+        filterMedalSets()
     }
     
     var body: some View {
@@ -47,12 +39,8 @@ struct MedalSetsView: View {
             if showTags {
                 HStack(spacing: 15) {
                     ForEach(["Attacker", "Runner", "Defender"], id: \.self) { tag in
-                        TagButton(label: tag, isSelected: selectedTags.contains(tag)) {
-                            if selectedTags.contains(tag) {
-                                selectedTags.removeAll { $0 == tag }
-                            } else {
-                                selectedTags.append(tag)
-                            }
+                        TagButton(label: tag, isSelected: selectedTag == tag) {
+                            selectedTag = (selectedTag == tag) ? nil : tag
                         }
                     }
                 }
@@ -67,7 +55,7 @@ struct MedalSetsView: View {
                             .foregroundColor(.secondary)
                             .padding()
                     } else {
-                        ForEach(filteredMedalSets, id: \.imageURLs) { set in
+                        ForEach(filteredMedalSets, id: \.id) { set in
                             MedalSetCardView(medalSet: set)
                                 .padding(.horizontal)
                         }
@@ -77,13 +65,23 @@ struct MedalSetsView: View {
             }
             .scrollIndicators(.hidden)
             
-            InfoButton(infoMessage: "You can search for medal sets that are suitable for each class. If you select multiple classes, the displayed sets will be practical for all chosen classes.\n\nNOTE: More sets will be added in the future.", homeVM: homeVM)
+            InfoButton(infoMessage: "You can search for medal sets that are suitable for each class.\n\nNOTE: More sets will be added in the future.", helper: helper)
         }
         .padding(.top)
         .background(colourScheme == .dark ? Color.black.opacity(0.95) : Color.gray.opacity(0.05))
     }
-}
 
-#Preview {
-    MedalSetsView(homeVM: HomeViewModel())
+    private func filterMedalSets() -> [MedalSet] {
+        var sets = db.medalSets
+        if let selectedTag = selectedTag {
+            sets = sets.filter { set in
+                set.bestFor.contains(selectedTag)
+            }
+        }
+        
+        return sets
+    }
 }
+//#Preview {
+//    MedalSetsView(homeVM: HomeViewModel())
+//}

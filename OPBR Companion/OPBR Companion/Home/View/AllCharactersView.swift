@@ -8,36 +8,24 @@
 import SwiftUI
 
 struct AllCharactersView: View {
-    // Search text
-    @State private var searchText: String = ""
-    @State private var text: String = "Search characters..."
     // Colour scheme
     @Environment(\.colorScheme) private var colourScheme
     // View model
-    @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var db: Supabase
+    @ObservedObject var helper: Helper
     // Colour filter options
     private let colorTags = ["Red", "Green", "Blue", "Light", "Dark"]
     // Filter tags
     @State private var selectedTag: String? = nil
-    @State private var selectedColor: String? = nil
     @State private var showClassTags: Bool = false
-    @State private var showColourTags: Bool = false
     // Filtering characters
     private var filteredCharacters: [Character] {
-        var characters = homeVM.characters
-        
+        var characters = db.characters
         if let selectedTag = selectedTag {
             characters = characters.filter { character in
                 character.characterClass.contains(selectedTag)
             }
         }
-        
-        if let selectedColor = selectedColor {
-            characters = characters.filter { character in
-                character.colour.contains(selectedColor)
-            }
-        }
-        
         return characters
     }
     
@@ -66,31 +54,6 @@ struct AllCharactersView: View {
                 .padding()
             }
             
-            HStack {
-                Button(action: {
-                    showColourTags.toggle()
-                }) {
-                    HStack {
-                        Text(showColourTags ? "Hide colour" : "Show colour")
-                        Image(systemName: showColourTags ? "chevron.up" : "chevron.down")
-                    }
-                }
-                .padding()
-            }
-            
-            if showColourTags {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(colorTags, id: \.self) { color in
-                            TagButton(label: color, isSelected: selectedColor == color) {
-                                selectedColor = (selectedColor == color) ? nil : color
-                            }
-                        }
-                    }
-                    .padding()
-                }
-            }
-            
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 8) {
                     if filteredCharacters.isEmpty {
@@ -99,9 +62,9 @@ struct AllCharactersView: View {
                             .foregroundColor(.secondary)
                             .padding()
                     } else {
-                        ForEach(filteredCharacters, id: \.imageURL) { character in
-                            NavigationLink(destination: CharacterView(homeVM: homeVM, character: character)) {
-                                CharacterCardView(character: character, homeViewModel: homeVM)
+                        ForEach(filteredCharacters, id: \.artwork) { character in
+                            NavigationLink(destination: CharacterView(character: character)) {
+                                CharacterCardView(character: character)
                             }
                         }
                     }
@@ -110,13 +73,14 @@ struct AllCharactersView: View {
             }
             .scrollIndicators(.hidden)
             
-            InfoButton(infoMessage: "You can filter for characters by class and colour.\n\nNote: More characters will be added in the future.", homeVM: homeVM)
+            InfoButton(infoMessage: "You can filter for characters by their class.\n\nNote: More characters will be added in the future.", helper: helper)
         }
         .padding(.top)
         .ignoresSafeArea(.keyboard, edges: .all)
+        .background(colourScheme == .dark ? Color.black.opacity(0.95) : Color.gray.opacity(0.05))
     }
 }
 
-#Preview {
-    AllCharactersView(homeVM: HomeViewModel())
-}
+//#Preview {
+//    AllCharactersView(homeVM: HomeViewModel())
+//}

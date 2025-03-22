@@ -7,20 +7,38 @@
 
 import Foundation
 
-struct Character: Codable, Equatable {
-    let imageURL: URL
+struct Character: Codable {
+    let id: Int
+    let artwork: String?
     let characterClass: String
-    let colour: String
-    let tags: [String]
+    let color: String
     let name: String
     let title: String
     let guide: String?
-    let videoUrl: String?
-    let medalURL: URL
-    let medalTrait: String
-    let medalTags: [String]
-    let recommendedSet: [URL]?
+    let recommendedSet: [String]?
     let setMessage: String?
-    let recommededStats: [String]?
+    let recommendedStats: String?
     let statMessage: String?
+    let medal: String?
+    let medalTags: [String]
+    let medalTrait: String
+    let characterTags: [String]?
+    
+    enum CodingKeys: String, CodingKey {
+            case id
+            case artwork
+            case characterClass = "class"
+            case color
+            case name
+            case title
+            case guide
+            case recommendedSet = "recommended_set"
+            case setMessage = "set_message"
+            case recommendedStats = "recommended_stats"
+            case statMessage = "stat_message"
+            case medal
+            case medalTags = "medal_tags"
+            case medalTrait = "medal_trait"
+            case characterTags = "character_tags"
+        }
 }
