@@ -11,6 +11,7 @@ import Supabase
 class Supabase: ObservableObject {
     static let shared = Supabase()
     private let supabaseClient: SupabaseClient
+    @Published var helper = Helper()
     
     @Published var characters: [Character] = []
     @Published var supports: [Support] = []
@@ -32,7 +33,7 @@ class Supabase: ObservableObject {
                 self.characters = response
             }
         } catch {
-            print("Error fetching characters: \(error)")
+            helper.showAlert(message: "Error fetching characters: \(error)")
         }
     }
     
@@ -48,7 +49,7 @@ class Supabase: ObservableObject {
                 self.supports = response
             }
         } catch {
-            print("Error fetching supports: \(error)")
+            helper.showAlert(message: "Error fetching supports: \(error)")
         }
     }
     
@@ -59,15 +60,12 @@ class Supabase: ObservableObject {
                 .select()
                 .execute()
                 .value
-            
-            print("Raw response: \(response)")
 
             DispatchQueue.main.async {
                 self.medalSets = response
-                print("Medals: \(self.supports)")
             }
         } catch {
-            print("Error fetching medals: \(error)")
+            helper.showAlert(message: "Error fetching medal sets: \(error)")
         }
     }
 }

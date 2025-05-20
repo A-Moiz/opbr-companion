@@ -14,7 +14,7 @@ struct SplashScreenView: View {
             Rectangle()
                 .fill(colourScheme == .dark ? Color(.systemGray6) : Color(.systemGray))
             
-            Image("appIcon-4")
+            Image("Icon-5")
                 .resizable()
                 .frame(width: 400, height: 400)
                 .cornerRadius(20)

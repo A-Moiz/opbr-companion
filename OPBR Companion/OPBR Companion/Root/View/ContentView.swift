@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     // Splash screen
     @State private var showSplashScreen: Bool = true
+    // View models
     @ObservedObject private var supabase = Supabase.shared
     @ObservedObject private var helper = Helper()
     
