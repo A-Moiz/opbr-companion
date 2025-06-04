@@ -56,5 +56,5 @@ struct CharacterCardView: View {
 }
 
 #Preview {
-    CharacterCardView(character: Character(id: 0, artwork: "", characterClass: "", color: "", name: "", title: "", guide: "", recommendedSet: [""], setMessage: "", recommendedStats: "", statMessage: "", medal: "", medalTags: [""], medalTrait: "", characterTags: [""]))
+    CharacterCardView(character: Character(id: 0, artwork: "", characterClass: "", color: "", name: "", title: "", guide: "", recommendedSet: [""], setMessage: "", recommendedStats: "", statMessage: "", medal: "", medalTags: [""], medalTrait: "", characterTags: [""], altSets: [["", "", ""]]))
 }

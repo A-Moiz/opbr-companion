@@ -23,6 +23,7 @@ struct Character: Codable {
     let medalTags: [String]
     let medalTrait: String
     let characterTags: [String]?
+    let altSets: [[String]]?
     
     enum CodingKeys: String, CodingKey {
             case id
@@ -40,5 +41,6 @@ struct Character: Codable {
             case medalTags = "medal_tags"
             case medalTrait = "medal_trait"
             case characterTags = "character_tags"
+            case altSets = "alt_sets"
         }
 }

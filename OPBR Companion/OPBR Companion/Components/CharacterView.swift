@@ -105,12 +105,18 @@ struct CharacterView: View {
     
     private var recommendedSetView: some View {
         Group {
-            if let recommendedSet = character.recommendedSet, !recommendedSet.isEmpty {
+            if let recommendedSet = character.recommendedSet,
+               !recommendedSet.isEmpty,
+               let setMessage = character.setMessage,
+               !setMessage.isEmpty {
+
                 let recommendedSetURLs = recommendedSet.compactMap { URL(string: $0) }
-                
-                if let setMessage = character.setMessage, !setMessage.isEmpty {
-                    RecommendedSetView(recommendedSet: recommendedSetURLs, setMessage: setMessage)
-                }
+
+                let altSetURLs: [[URL]] = character.altSets?.map { innerArray in
+                    innerArray.compactMap { URL(string: $0) }
+                } ?? []
+
+                RecommendedSetView(recommendedSet: recommendedSetURLs, altSets: altSetURLs, setMessage: setMessage)
             }
         }
     }
