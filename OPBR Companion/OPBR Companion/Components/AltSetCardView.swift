@@ -18,8 +18,7 @@ struct AltSetCardView: View {
                     ForEach(imageURLs, id: \.self) { url in
                         KFImage(url)
                             .resizable()
-                            .aspectRatio(1, contentMode: .fit)
-                            .frame(maxWidth: .infinity)
+                            .frame(width: 75, height: 75)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .shadow(radius: 3)
                     }
