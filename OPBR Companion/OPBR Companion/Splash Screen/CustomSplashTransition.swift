@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-import SwiftUICore
+import SwiftUI
 
 struct CustomSplashTransition: Transition {
     var isRoot: Bool
