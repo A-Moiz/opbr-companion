@@ -2,12 +2,12 @@
 //  MedalSet.swift
 //  OPBR Companion
 //
-//  Created by Abdul Moiz on 02/11/2024.
+//  Created by Abdul Moiz on 17/01/2026.
 //
 
 import Foundation
 
-struct MedalSet: Codable {
+struct MedalSet: Codable, Identifiable {
     let id: Int
     let name: String?
     let medals: [String]?

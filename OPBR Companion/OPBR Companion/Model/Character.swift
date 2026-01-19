@@ -2,12 +2,12 @@
 //  Character.swift
 //  OPBR Companion
 //
-//  Created by Abdul Moiz on 01/11/2024.
+//  Created by Abdul Moiz on 17/01/2026.
 //
 
 import Foundation
 
-struct Character: Codable {
+struct Character: Codable, Identifiable {
     let id: Int
     let artwork: String?
     let characterClass: String

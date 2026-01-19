@@ -2,12 +2,12 @@
 //  Support.swift
 //  OPBR Companion
 //
-//  Created by Abdul Moiz on 21/03/2025.
+//  Created by Abdul Moiz on 17/01/2026.
 //
 
 import Foundation
 
-struct Support: Codable {
+struct Support: Codable, Identifiable {
     let id: Int
     let support: String?
     let supportColor: String?
