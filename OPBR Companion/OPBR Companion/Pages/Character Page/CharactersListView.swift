@@ -60,7 +60,11 @@ struct CharacterGridView: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(filteredCharacters) { character in
                         NavigationLink(destination: CharacterDetailView(character: character)) {
-                            CharacterCard(character: character)
+                            if db.appSettings?.showArtworks ?? false {
+                                CharacterCard(character: character)
+                            } else {
+                                AltCharacterCard(character: character)
+                            }
                         }
                         .buttonStyle(.plain)
                     }
@@ -115,7 +119,49 @@ struct CharacterCard: View {
     }
 }
 
+// MARK: - Character card without image
+struct AltCharacterCard: View {
+    let character: Character
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            
+            ZStack {
+                Color.accentColor.opacity(0.15)
+                
+                Image(systemName: "person.fill")
+                    .font(.system(size: 44, weight: .regular))
+                    .foregroundStyle(Color.accentColor)
+            }
+            .frame(height: 140)
+            .frame(maxWidth: .infinity)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(character.name)
+                    .font(.headline)
+                    .lineLimit(1)
+                    .foregroundStyle(.primary)
+                
+                Text(character.title)
+                    .font(.caption)
+                    .lineLimit(2)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(10)
+            .frame(height: 70, alignment: .topLeading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(.white.opacity(0.1), lineWidth: 1)
+        )
+    }
+}
+
 #Preview {
     CharactersListView()
         .environment(Database())
 }
+

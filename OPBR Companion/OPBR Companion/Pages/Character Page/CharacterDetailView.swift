@@ -9,11 +9,16 @@ import SwiftUI
 import Kingfisher
 
 struct CharacterDetailView: View {
+    @Environment(Database.self) var db
     let character: Character
     
     var body: some View {
         ScrollView {
-            CharacterHeroHeader(artwork: character.artwork, title: character.title, tags: character.characterTags ?? [])
+            if db.appSettings?.showArtworks ?? false {
+                CharacterHeroHeader(artwork: character.artwork, title: character.title, tags: character.characterTags ?? [])
+            } else {
+                AltCharacterHeroHeader(title: character.title, tags: character.characterTags ?? [])
+            }
             
             CharacterInfo(characterClass: character.characterClass, color: character.color)
             
@@ -54,6 +59,38 @@ struct CharacterHeroHeader: View {
             }
             
             VStack {
+                Text(title)
+                    .font(.title2.bold())
+                
+                TagsView(tags: tags)
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+        }
+        .padding(.horizontal)
+        .shadow(color: .black.opacity(0.2), radius: 15, x: 0, y: 10)
+    }
+}
+
+// MARK: - Alt Character Header section
+struct AltCharacterHeroHeader: View {
+    let title: String
+    let tags: [String]
+    
+    var body: some View {
+        VStack {
+            
+            ZStack {
+                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    .fill(Color.accentColor.opacity(0.15))
+                
+                Image(systemName: "person.fill")
+                    .font(.system(size: 96, weight: .regular))
+                    .foregroundStyle(Color.accentColor)
+            }
+            .frame(height: 380)
+            
+            VStack(spacing: 8) {
                 Text(title)
                     .font(.title2.bold())
                 

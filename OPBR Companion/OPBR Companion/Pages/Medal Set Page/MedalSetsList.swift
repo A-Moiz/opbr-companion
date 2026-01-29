@@ -44,6 +44,7 @@ struct MedalSetsGridView: View {
     let characterClasses = ["Attacker", "Defender", "Runner"]
     let filteredSets: [MedalSet]
     private let columns = [GridItem(.adaptive(minimum: 160), spacing: 16)]
+    @Environment(Database.self) var db
     
     var body: some View {
         ScrollView {
@@ -57,7 +58,11 @@ struct MedalSetsGridView: View {
                 
                 LazyVStack {
                     ForEach(filteredSets) { set in
-                        MedalSetCard(medalSet: set)
+                        if db.appSettings?.showArtworks ?? false {
+                            MedalSetCard(medalSet: set)
+                        } else {
+                            AltMedalSetCard(medalSet: set)
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -148,6 +153,96 @@ struct MedalSetCard: View {
     }
 }
 
+// MARK: - Alt Medal set card
+struct AltMedalSetCard: View {
+    var medalSet: MedalSet
+    @State private var showDetailView: Bool = false
+    @Environment(\.colorScheme) private var colorScheme
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            
+            // Header
+            if let name = medalSet.name, !name.isEmpty {
+                HStack {
+                    Text(name)
+                        .font(.title3.bold())
+                        .foregroundStyle(.primary)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "medal.fill")
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(.orange)
+                }
+            }
+            
+            // Medals + Traits
+            VStack(spacing: 14) {
+                let medals = medalSet.medals ?? []
+                let traits = medalSet.medalTraits ?? []
+                
+                ForEach(0..<medals.count, id: \.self) { index in
+                    HStack(alignment: .center, spacing: 14) {
+                        
+                        // SF Symbol Medal Circle
+                        ZStack {
+                            Circle()
+                                .fill(.orange.opacity(0.15))
+                                .frame(width: 52, height: 52)
+                            
+                            Image(systemName: "circle.fill")
+                                .font(.system(size: 20))
+                                .foregroundStyle(.orange)
+                        }
+                        .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+
+                        if index < traits.count {
+                            Text(traits[index])
+                                .font(.caption2)
+                                .fontWeight(.medium)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        
+                        Spacer()
+                    }
+                }
+            }
+            
+            // CTA
+            Button {
+                showDetailView = true
+            } label: {
+                Label("View Set Details", systemImage: "chevron.right.circle.fill")
+                    .font(.subheadline.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(.orange.opacity(0.1))
+                    .foregroundStyle(.orange)
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(20)
+        .background {
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(.regularMaterial)
+                .shadow(
+                    color: .black.opacity(colorScheme == .dark ? 0.3 : 0.08),
+                    radius: 12,
+                    y: 6
+                )
+        }
+        .sheet(isPresented: $showDetailView) {
+            MedalSetDetailView(medalSet: medalSet)
+                .presentationDetents([.medium, .large])
+                .presentationCornerRadius(44)
+                .presentationBackground(.thinMaterial)
+        }
+    }
+}
 
 #Preview {
     MedalSetsList()

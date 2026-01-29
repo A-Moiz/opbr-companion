@@ -19,8 +19,13 @@ struct MainTabView: View {
             }
             
             // MARK: - Support Page
-            Tab("Support", systemImage: "shield.fill", value: 1) {
-                SupportListView()
+//            Tab("Support", systemImage: "shield.fill", value: 1) {
+//                SupportListView()
+//            }
+            if db.appSettings?.showArtworks == true {
+                Tab("Support", systemImage: "shield.fill", value: 1) {
+                    SupportListView()
+                }
             }
             
             // MARK: - Medal Sets Page

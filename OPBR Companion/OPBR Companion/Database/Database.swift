@@ -18,6 +18,7 @@ class Database {
     var characters: [Character] = []
     var supports: [Support] = []
     var medalSets: [MedalSet] = []
+    var appSettings: AppSettings?
     
     // UI State Management
     var isLoading: Bool = false
@@ -27,6 +28,25 @@ class Database {
     
     init() {
         supabaseClient = SupabaseClient(supabaseURL: URL(string: Config.SUPABASE_URL)!, supabaseKey: Config.SUPABASE_KEY)
+    }
+    
+    // MARK: - Fetch app settings
+    @discardableResult
+    private func fetchAppSettings() async -> Bool {
+        do {
+            let settingsArray: [AppSettings] = try await supabaseClient
+                .from("app_settings")
+                .select()
+                .limit(1)
+                .execute()
+                .value
+            
+            self.appSettings = settingsArray.first
+            return true
+        } catch {
+            handleError(title: "Error fetching App Settings", error: error.localizedDescription)
+            return false
+        }
     }
     
     // MARK: - Fetch Characters
@@ -81,8 +101,8 @@ class Database {
     func loadInitialData() async {
         isLoading = true
         
-        // Fetch all three datasets in parallel using a TaskGroup for 2026 performance
         await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.fetchAppSettings() }
             group.addTask { await self.fetchCharacters() }
             group.addTask { await self.fetchSupportImages() }
             group.addTask { await self.fetchMedalSets() }
@@ -91,6 +111,7 @@ class Database {
         isLoading = false
     }
     
+    // MARK: - Helper function for displaying alerts
     func handleError(title: String, error: String) {
         alertTitle = title
         alertMessage = error
