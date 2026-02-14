@@ -13,6 +13,7 @@ struct MedalSetDetailView: View {
     private let imageSize: CGFloat = 56.0
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    @Environment(Database.self) var db
     
     var body: some View {
         NavigationStack {
@@ -25,12 +26,25 @@ struct MedalSetDetailView: View {
                             
                             ForEach(0..<medals.count, id: \.self) { index in
                                 HStack(alignment: .center, spacing: 16) {
-                                    KFImage(URL(string: medals[index]))
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: imageSize, height: imageSize)
-                                        .background(Color(.systemGray6))
-                                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    if db.appSettings?.showArtworks ?? false {
+                                        KFImage(URL(string: medals[index]))
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: imageSize, height: imageSize)
+                                            .background(Color(.systemGray6))
+                                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    } else {
+                                        ZStack {
+                                            Circle()
+                                                .fill(.orange.opacity(0.15))
+                                                .frame(width: 52, height: 52)
+                                            
+                                            Image(systemName: "circle.fill")
+                                                .font(.system(size: 20))
+                                                .foregroundStyle(.orange)
+                                        }
+                                        .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                                    }
                                     
                                     if index < traits.count {
                                         Text(traits[index])

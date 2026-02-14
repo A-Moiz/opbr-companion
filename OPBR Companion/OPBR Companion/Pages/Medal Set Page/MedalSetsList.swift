@@ -78,6 +78,7 @@ struct MedalSetCard: View {
     var medalSet: MedalSet
     @State private var showDetailView: Bool = false
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(Database.self) var db
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -110,7 +111,7 @@ struct MedalSetCard: View {
                             .frame(width: 52, height: 52)
                             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                             .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
-
+                        
                         if index < traits.count {
                             Text(traits[index])
                                 .font(.caption2)
@@ -185,7 +186,6 @@ struct AltMedalSetCard: View {
                 ForEach(0..<medals.count, id: \.self) { index in
                     HStack(alignment: .center, spacing: 14) {
                         
-                        // SF Symbol Medal Circle
                         ZStack {
                             Circle()
                                 .fill(.orange.opacity(0.15))
@@ -196,7 +196,7 @@ struct AltMedalSetCard: View {
                                 .foregroundStyle(.orange)
                         }
                         .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
-
+                        
                         if index < traits.count {
                             Text(traits[index])
                                 .font(.caption2)
@@ -211,7 +211,6 @@ struct AltMedalSetCard: View {
                 }
             }
             
-            // CTA
             Button {
                 showDetailView = true
             } label: {

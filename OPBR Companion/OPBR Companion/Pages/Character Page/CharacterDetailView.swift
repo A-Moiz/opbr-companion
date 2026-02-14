@@ -176,18 +176,32 @@ struct DetailCapsule: View {
 // MARK: Character's medal
 struct CharacterMedal: View {
     let character: Character
+    @Environment(Database.self) var db
     
     var body: some View {
         VStack {
             HStack {
-                if let medalURLString = character.medal,
-                   let medalURL = URL(string: medalURLString) {
-                    KFImage(medalURL)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 60, height: 60)
-                        .cornerRadius(15)
-                        .shadow(radius: 5)
+                if db.appSettings?.showArtworks ?? false {
+                    if let medalURLString = character.medal,
+                       let medalURL = URL(string: medalURLString) {
+                        KFImage(medalURL)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 60, height: 60)
+                            .cornerRadius(15)
+                            .shadow(radius: 5)
+                    }
+                } else {
+                    ZStack {
+                        Circle()
+                            .fill(.orange.opacity(0.15))
+                            .frame(width: 52, height: 52)
+                        
+                        Image(systemName: "circle.fill")
+                            .font(.system(size: 20))
+                            .foregroundStyle(.orange)
+                    }
+                    .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
                 }
                 
                 Text("\(character.medalTrait)")
@@ -206,19 +220,22 @@ struct CharacterMedal: View {
 struct RecommendedSet: View {
     let character: Character
     @State var showAltSets: Bool = false
+    @Environment(Database.self) var db
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("Recommended Set", systemImage: "circle.grid.3x3.fill")
             
             HStack(spacing: 16) {
-                if let recommendedSet = character.recommendedSet {
-                    ForEach(recommendedSet, id: \.self) { medalUrl in
-                        MedalItem(url: medalUrl)
+                if db.appSettings?.showArtworks ?? false {
+                    if let recommendedSet = character.recommendedSet {
+                        ForEach(recommendedSet, id: \.self) { medalUrl in
+                            MedalItem(url: medalUrl)
+                        }
+                    } else {
+                        ContentUnavailableView("No Medals Recommended", systemImage: "questionmark.circle")
+                            .frame(width: 200, height: 100)
                     }
-                } else {
-                    ContentUnavailableView("No Medals Recommended", systemImage: "questionmark.circle")
-                        .frame(width: 200, height: 100)
                 }
             }
             
@@ -226,7 +243,7 @@ struct RecommendedSet: View {
                 Text(message)
             }
             
-            if let altSets = character.altSets, !altSets.isEmpty {
+            if let altSets = character.altSets, !altSets.isEmpty, db.appSettings?.showArtworks ?? false {
                 Button {
                     showAltSets = true
                 } label: {
@@ -316,7 +333,7 @@ struct CharacterGuide: View {
                     }
                 }
             }
-        
+            
             if showGuide {
                 if let guide = character.guide, !guide.isEmpty {
                     Text(guide)
