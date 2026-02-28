@@ -19,9 +19,6 @@ struct MainTabView: View {
             }
             
             // MARK: - Support Page
-//            Tab("Support", systemImage: "shield.fill", value: 1) {
-//                SupportListView()
-//            }
             if db.appSettings?.showArtworks == true {
                 Tab("Support", systemImage: "shield.fill", value: 1) {
                     SupportListView()
