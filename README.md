@@ -23,9 +23,6 @@ Take the OBPR experience with you! The companion app is also available on Web & 
 
 ---
 
-## 👨🏽‍💻 GitHub Repos
-
-
 ## Authors
 
 Created by [@Abdul](https://github.com/A-Moiz) | [@Mohamed](https://github.com/Mohamed-Y-Mohamed) | [@Dominik](https://github.com/dominik-deak) | [@Wallyson](https://github.com/Wallysonadsilva)
