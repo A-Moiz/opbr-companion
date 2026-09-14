@@ -20,3 +20,16 @@ struct Support: Codable, Identifiable {
         case supportTags = "support_tags"
     }
 }
+
+enum SupportSortOption: String, CaseIterable, Identifiable {
+    case `default` = "Default"
+    case mostTags = "Most Tags"
+    
+    var id: Self { self }
+    var icon: String {
+        switch self {
+        case .default: return "line.3.horizontal.decrease.circle"
+        case .mostTags: return "text.line.first.and.arrowtriangle.forward"
+        }
+    }
+}

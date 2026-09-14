@@ -18,8 +18,9 @@ struct SupportListView: View {
     @State var selectedTags: [String]?
     @State var selectedColor: String?
     @State var dummyItem2: [String]? = []
+    @State private var selectedSort: SupportSortOption = .default
     private var filteredSupports: [Support] {
-        db.supports.filter { support in
+        let filtered = db.supports.filter { support in
             let matchesColor = selectedColor == nil || support.supportColor == selectedColor
 
             let selectedTagsList = selectedTags ?? []
@@ -29,9 +30,17 @@ struct SupportListView: View {
             }
             return matchesColor && matchesTags
         }
+        
+        switch selectedSort {
+        case .default:
+            return filtered
+        case .mostTags:
+            return filtered.sorted { ($0.supportTags?.count ?? 0) > ($1.supportTags?.count ?? 0) }
+        }
     }
+    
     private var hasActiveFilters: Bool {
-        selectedColor != nil || !(selectedTags?.isEmpty ?? true)
+        selectedColor != nil || !(selectedTags?.isEmpty ?? true) || selectedSort != .default
     }
     
     var body: some View {
@@ -48,7 +57,7 @@ struct SupportListView: View {
             .navigationTitle("Supports")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItemGroup(placement: .primaryAction) {
                     if hasActiveFilters {
                         Button(action: clearFilters) {
                             Label("Clear All", systemImage: "arrow.counterclockwise.circle.fill")
@@ -57,8 +66,25 @@ struct SupportListView: View {
                         }
                         .transition(.scale.combined(with: .opacity))
                     }
+                    
+                    sortMenu
                 }
             }
+        }
+    }
+
+    private var sortMenu: some View {
+        Menu {
+            Picker("Sort By", selection: $selectedSort.animation(.spring())) {
+                ForEach(SupportSortOption.allCases) { option in
+                    Label(option.rawValue, systemImage: option.icon)
+                        .tag(option)
+                }
+            }
+        } label: {
+            Label("Sort", systemImage: "arrow.up.and.down.text.horizontal")
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(selectedSort != .default ? .orange : .primary)
         }
     }
     
@@ -66,6 +92,7 @@ struct SupportListView: View {
         withAnimation(.spring()) {
             selectedColor = nil
             selectedTags = []
+            selectedSort = .default
         }
     }
 }
@@ -107,6 +134,10 @@ struct SupportGridView: View {
                 )
             }
             .padding(.bottom, 10)
+            
+            Text("Click each support for a better view")
+                .font(.caption)
+                .foregroundStyle(.gray)
 
             if supports.isEmpty {
                 ContentUnavailableView("No Supports Found",
